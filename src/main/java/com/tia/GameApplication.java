@@ -24,7 +24,8 @@ public class GameApplication extends Application {
         final int AGENTS_NUMBER = 4;
 
         Game game = new Game(5, AGENTS_NUMBER);
-        game.getGrid().printStatus();
+        game.printStatus();
+        game.printAgents();
 
         // launch();
     }

@@ -20,41 +20,11 @@ public class Grid {
         }
     }
 
-    /**
-     * TODO
-     * @param agents
-     */
-    public void setAgentsAtRandBox(Agent[] agents) {
-
-    }
-
     public Box getBox(int x, int y)  {
         return boxes[x][y];
     }
 
-    public void printStatus() {
-        // TODO print agents destinations
-        for (Box[] x : boxes) {
-            for (Box y : x) {
-                if (y.getAgent() == null) {
-                    System.out.print("0 ");
-                } else {
-                    System.out.print(y.getAgent().getSymbol() + " ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
     public Box[][] getBoxes() {
         return boxes;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getColumns() {
-        return columns;
     }
 }

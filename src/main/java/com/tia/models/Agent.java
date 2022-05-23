@@ -4,15 +4,15 @@ import com.tia.enums.Symbol;
 
 public class Agent {
     private Symbol symbol;
-    private int startX;
-    private int startY;
+    private int sourceX;
+    private int sourceY;
     private int destinationX;
     private int destinationY;
 
-    public Agent(Symbol symbol, int startX, int startY, int destinationX, int destinationY) {
+    public Agent(Symbol symbol, int sourceX, int sourceY, int destinationX, int destinationY) {
         this.symbol = symbol;
-        this.startX = startX;
-        this.startY = startY;
+        this.sourceX = sourceX;
+        this.sourceY = sourceY;
         this.destinationX = destinationX;
         this.destinationY = destinationY;
     }
@@ -27,5 +27,14 @@ public class Agent {
 
     public int getDestinationY() {
         return destinationY;
+    }
+
+    @Override
+    public String toString() {
+        return "Agent{" +
+                "symbol=" + symbol +
+                ", start=(" + sourceX + ", " + sourceY + ")" +
+                ", destination=(" + destinationX + ", " + destinationY + ")" +
+                '}';
     }
 }

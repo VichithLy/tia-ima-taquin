@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ima-taquin" target="18" />
+      <module name="ima-taquin" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

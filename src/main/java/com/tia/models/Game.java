@@ -2,14 +2,18 @@ package com.tia.models;
 
 import com.tia.enums.Symbol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
     private final int size;
     private final Grid grid;
-    private Agent[] agents;
+    private List<Agent> agents;
 
     public Game(int size, int agentsNumber) {
         this.size = size;
         this.grid = new Grid(size, size);
+        this.agents = new ArrayList<>();
         initAgents(grid, agentsNumber);
     }
 
@@ -22,29 +26,69 @@ public class Game {
         boxes[2][3].setAgent(new Agent(Symbol.D, 2,3, 3, 1));*/
 
         for (int i = 0; i < agentsNumber; i++) {
-            int startX = getRandomNumber(0, size - 1);
-            int startY = getRandomNumber(0, size - 1);
+            int sourceX = getRandomNumber(0, size - 1);
+            int sourceY = getRandomNumber(0, size - 1);
 
-            while (!grid.getBox(startX, startY).isEmpty()) {
-                startX = getRandomNumber(0, size - 1);
-                startY = getRandomNumber(0, size - 1);
+            while (!grid.getBox(sourceX, sourceY).isEmpty()) {
+                sourceX = getRandomNumber(0, size - 1);
+                sourceY = getRandomNumber(0, size - 1);
             }
+
+            Box startBox = grid.getBox(sourceX, sourceY);
 
             int destinationX = getRandomNumber(0, size - 1);
             int destinationY = getRandomNumber(0, size - 1);
 
-            while (grid.getBox(startX, startY).isDestination()) {
+            // TODO
+            while (startBox.isDestination() && destinationX == sourceX && destinationY == sourceY) {
                 destinationX = getRandomNumber(0, size - 1);
                 destinationY = getRandomNumber(0, size - 1);
             }
 
-            boxes[startX][startY].setAgent(
-                    new Agent(
-                            Symbol.getSymbolByCode(i),
-                            startX, startX,
-                            destinationX, destinationY
-                    )
-            );
+            Agent agent =  new Agent(Symbol.getSymbolByCode(i), sourceX, sourceY, destinationX, destinationY);
+            boxes[sourceX][sourceY].setAgent(agent);
+            boxes[sourceX][sourceY].setIsSource(true);
+            boxes[destinationX][destinationY].setIsSource(true);
+            agents.add(agent);
+        }
+    }
+
+    // TODO
+    private boolean boxIsDestination(Box box) {
+        if (box.getAgent() == null)
+            return false;
+
+        System.out.println(box.getAgent().getDestinationX());
+        System.out.println(box.getAgent().getDestinationY());
+
+        return (box.getAgent().getDestinationX() == box.getX() &&
+                box.getAgent().getDestinationY() == box.getY());
+    }
+
+    public void printStatus() {
+        // TODO print agents destinations
+        for (Box[] x : grid.getBoxes()) {
+            for (Box y : x) {
+                if (y.getAgent() == null) {
+                    System.out.print("0 ");
+                } else if (y.isDestination()) {
+                    System.out.println("x"+ y.getAgent().getSymbol() + " ");
+                } else {
+                    System.out.print(y.getAgent().getSymbol() + " ");
+                }
+
+            }
+            System.out.println();
+        }
+
+        /*else if (boxIsDestination(y)) {
+            System.out.println("x"+ y.getAgent().getSymbol() + " ");
+        }*/
+    }
+
+    public void printAgents() {
+        for (Agent agent : agents) {
+            System.out.println(agent.toString());
         }
     }
 

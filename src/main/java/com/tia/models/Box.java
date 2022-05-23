@@ -19,19 +19,15 @@ public class Box {
         this.agent = agent;
     }
 
-    public int getX() {
-        return x;
+    public boolean isEmpty() {
+        return this.agent == null;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
+    public boolean isDestination() {
+        if (agent == null)
+            return false;
 
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+        return (agent.getDestinationX() == x &&
+                agent.getDestinationY() == y);
     }
 }

@@ -4,65 +4,58 @@ import com.tia.enums.Symbol;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Game {
-    private final int size;
-    private final Grid grid;
+    private int size;
+    private Grid grid;
     private List<Agent> agents;
 
-    public Game(int size, int agentsNumber) {
+    public Game(int size, int agentsCount) {
         this.size = size;
-        this.grid = new Grid(size, size);
+        this.grid = new Grid(size);
         this.agents = new ArrayList<>();
-        initAgents(grid, agentsNumber);
+
+        initAgents(grid, agentsCount);
     }
 
-    private void initAgents(Grid grid, int agentsNumber) {
-        Box[][] boxes = grid.getBoxes();
+    private void print(Object name, Object var) {
+        System.out.println(name + ": " + var);
+    }
 
-        /*boxes[0][3].setAgent(new Agent(Symbol.A, 0,3, 0, 1));
-        boxes[0][2].setAgent(new Agent(Symbol.B, 0,2, 1, 1));
-        boxes[1][2].setAgent(new Agent(Symbol.C, 1,2, 2, 1));
-        boxes[2][3].setAgent(new Agent(Symbol.D, 2,3, 3, 1));*/
+    private void initAgents(Grid grid, int agentsCount) {
+        List<Box> sources = new ArrayList<>();
+        List<Box> destinations = new ArrayList<>();
 
-        for (int i = 0; i < agentsNumber; i++) {
-            int sourceX = getRandomNumber(0, size - 1);
-            int sourceY = getRandomNumber(0, size - 1);
+        for (int i = 0; i < agentsCount; i++) {
+            Random random = new Random();
+            int sourceX = random.nextInt(grid.getSize());
+            int sourceY = random.nextInt(grid.getSize());
+            Box source = new Box(sourceX, sourceY);
 
-            while (!grid.getBox(sourceX, sourceY).isEmpty()) {
-                sourceX = getRandomNumber(0, size - 1);
-                sourceY = getRandomNumber(0, size - 1);
+            while (sources.contains(source)) {
+                sourceX = random.nextInt(grid.getSize());
+                sourceY = random.nextInt(grid.getSize());
+                source = new Box(sourceX, sourceY);
             }
+            sources.add(source);
 
-            Box startBox = grid.getBox(sourceX, sourceY);
+            int destinationX = random.nextInt(grid.getSize());
+            int destinationY = random.nextInt(grid.getSize());
+            Box destination = new Box(destinationX, destinationY);
 
-            int destinationX = getRandomNumber(0, size - 1);
-            int destinationY = getRandomNumber(0, size - 1);
-
-            // TODO
-            while (startBox.isDestination() && destinationX == sourceX && destinationY == sourceY) {
-                destinationX = getRandomNumber(0, size - 1);
-                destinationY = getRandomNumber(0, size - 1);
+            while (sources.contains(destination) || destinations.contains(destination)) {
+                destinationX = random.nextInt(grid.getSize());
+                destinationY = random.nextInt(grid.getSize());
+                destination = new Box(destinationX, destinationY);
             }
+            destinations.add(destination);
 
-            Agent agent =  new Agent(Symbol.getSymbolByCode(i), sourceX, sourceY, destinationX, destinationY);
-            boxes[sourceX][sourceY].setAgent(agent);
-            boxes[sourceX][sourceY].setIsSource(true);
-            boxes[destinationX][destinationY].setIsSource(true);
+            Agent agent = new Agent(Symbol.getSymbolByCode(i), source, destination, source);
             agents.add(agent);
+            grid.getBox(sourceX, sourceY).setAgent(agent);
         }
-    }
 
-    // TODO
-    private boolean boxIsDestination(Box box) {
-        if (box.getAgent() == null)
-            return false;
-
-        System.out.println(box.getAgent().getDestinationX());
-        System.out.println(box.getAgent().getDestinationY());
-
-        return (box.getAgent().getDestinationX() == box.getX() &&
-                box.getAgent().getDestinationY() == box.getY());
     }
 
     public void printStatus() {
@@ -71,29 +64,18 @@ public class Game {
             for (Box y : x) {
                 if (y.getAgent() == null) {
                     System.out.print("0 ");
-                } else if (y.isDestination()) {
-                    System.out.println("x"+ y.getAgent().getSymbol() + " ");
                 } else {
                     System.out.print(y.getAgent().getSymbol() + " ");
                 }
-
             }
             System.out.println();
         }
-
-        /*else if (boxIsDestination(y)) {
-            System.out.println("x"+ y.getAgent().getSymbol() + " ");
-        }*/
     }
 
     public void printAgents() {
         for (Agent agent : agents) {
             System.out.println(agent.toString());
         }
-    }
-
-    private int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
     }
 
     public Grid getGrid() {

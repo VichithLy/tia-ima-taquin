@@ -1,18 +1,14 @@
 package com.tia.models;
 
-import com.tia.enums.Symbol;
-
 public class Grid {
-    private int rows;
-    private int columns;
+    private int size;
 
     private Box[][] boxes;
 
-    public Grid(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+    public Grid(int size) {
+        this.size = size;
 
-        boxes = new Box[rows][columns];
+        boxes = new Box[size][size];
         for (int i = 0; i < boxes.length; i++) {
             for (int j = 0; j < boxes[i].length; j++) {
                 boxes[i][j] = new Box(i, j);
@@ -26,5 +22,9 @@ public class Grid {
 
     public Box[][] getBoxes() {
         return boxes;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

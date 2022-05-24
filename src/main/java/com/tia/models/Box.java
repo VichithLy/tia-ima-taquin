@@ -1,55 +1,47 @@
 package com.tia.models;
 
+import java.util.Objects;
+
 public class Box {
-    private Agent agent;
-    private boolean isSource;
-    private boolean isDestination;
     private int x;
     private int y;
+    private Agent agent;
 
     public Box(int x, int y) {
-        this.agent = null;
         this.x = x;
         this.y = y;
-        this.isSource = false;
-        this.isDestination = false;
+        this.agent = null;
     }
 
     public Agent getAgent() {
         return agent;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     public void setAgent(Agent agent) {
         this.agent = agent;
     }
 
-    public void setIsSource(boolean isSource) {
-        isSource = isSource;
+    /**
+     * Check if the param Object is a Box
+     * and has the same x and y as this Box.
+     * @param o
+     * @return true or false
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Box box = (Box) o;
+        return x == box.x && y == box.y;
     }
 
-    public void setIsDestination(boolean isDestination) {
-        isDestination = isDestination;
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
-    public boolean isSource() {
-        return isSource;
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
-
-    public boolean isDestination() {
-        return isDestination;
-    }
-
-    public boolean isEmpty() {
-        return this.agent == null;
-    }
-
-
 }

@@ -21,6 +21,14 @@ public class Box {
         this.agent = agent;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     /**
      * Check if the param Object is a Box
      * and has the same x and y as this Box.

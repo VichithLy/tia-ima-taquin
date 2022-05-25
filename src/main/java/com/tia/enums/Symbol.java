@@ -20,4 +20,8 @@ public enum Symbol {
         }
         return null;
     }
+
+    public String getText() {
+        return text;
+    }
 }

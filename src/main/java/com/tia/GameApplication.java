@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -34,13 +35,14 @@ public class GameApplication extends Application {
         System.out.println();
         game.printStatus();*/
 
-        Text title = createMainTitle();
+        /*Text title = createMainTitle();
         GridPane board = createGameBoard(game);
-        BorderPane border = createMainBorder(title, board);
+        BorderPane border = createMainBorder(title, board);*/
 
-        // FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game-view.fxml"));
-        // Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        Scene scene = new Scene(border);
+        FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game-view.fxml"));
+        Parent root = fxmlLoader.load();
+        Scene scene = new Scene(root, 900, 750);
+        // Scene scene = new Scene(border);
         stage.setTitle("IMA - Taquin");
         stage.setScene(scene);
         stage.show();

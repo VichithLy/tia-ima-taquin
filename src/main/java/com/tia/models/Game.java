@@ -1,12 +1,13 @@
 package com.tia.models;
 
 import com.tia.enums.Symbol;
+import javafx.concurrent.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Game {
+public class Game extends Task<Void> {
     private int size;
     private Grid grid;
     private List<Agent> agents;
@@ -80,5 +81,10 @@ public class Game {
 
     public Grid getGrid() {
         return grid;
+    }
+
+    @Override
+    protected Void call() throws Exception {
+        return null;
     }
 }

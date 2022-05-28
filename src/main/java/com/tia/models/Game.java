@@ -1,5 +1,6 @@
 package com.tia.models;
 
+import com.tia.enums.Mode;
 import com.tia.enums.Symbol;
 import javafx.concurrent.Task;
 
@@ -11,11 +12,13 @@ public class Game extends Task<Void> {
     private int size;
     private Grid grid;
     private List<Agent> agents;
+    private Mode mode;
 
-    public Game(int size, int agentsCount) {
+    public Game(int size, int agentsCount, Mode mode) {
         this.size = size;
         this.grid = new Grid(size);
         this.agents = new ArrayList<>();
+        this.mode = mode;
 
         initAgents(grid, agentsCount);
     }
@@ -81,6 +84,14 @@ public class Game extends Task<Void> {
 
     public Grid getGrid() {
         return grid;
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     @Override

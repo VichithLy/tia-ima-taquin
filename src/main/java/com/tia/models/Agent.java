@@ -19,6 +19,14 @@ public class Agent {
         return symbol;
     }
 
+    public Box getSource() {
+        return source;
+    }
+
+    public Box getDestination() {
+        return destination;
+    }
+
     @Override
     public String toString() {
         return "Agent{" +

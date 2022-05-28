@@ -1,15 +1,12 @@
 package com.tia;
 
+import com.tia.enums.Mode;
 import com.tia.models.Game;
 import com.tia.views.GridView;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.GridPane;
 
 import java.util.Arrays;
 
@@ -17,27 +14,30 @@ import static com.tia.Constants.*;
 
 public class GameController {
     @FXML
-    Canvas board;
-    @FXML
-    private CheckBox simple;
-    @FXML
-    private CheckBox cognitive;
+    GridPane board;
     @FXML
     private ComboBox strategy;
 
-    private GraphicsContext gc;
     private Game game;
 
 
     @FXML
     public void initialize() {
-        gc = board.getGraphicsContext2D();
         strategy.setItems(FXCollections.observableList(Arrays.asList("Simple", "Cognitive")));
+        strategy.getSelectionModel().selectFirst();
+
+        GridView.drawBoard(board);
     }
 
     @FXML
     public void init() {
-        GridView.drawBoard(gc);
+        Mode mode = strategy.getSelectionModel().isSelected(0) ? Mode.SIMPLE : Mode.COGNITIVE;
+
+        game = new Game(SIZE_BOARD, NUMBER_AGENTS, mode);
+
+        reset();
+        GridView.drawBoard(board);
+        GridView.drawAgents(board, game.getAgents());
     }
 
     @FXML
@@ -48,6 +48,7 @@ public class GameController {
 
     @FXML
     public void reset() {
-        gc.clearRect(0, 0, WIDTH_BOARD, WIDTH_BOARD);
+        board.getChildren().clear();
+        GridView.drawBoard(board);
     }
 }

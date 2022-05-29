@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import static com.tia.Constants.*;
 
 public class GameApplication extends Application {
     private Game game;
@@ -41,7 +42,7 @@ public class GameApplication extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game-view.fxml"));
         Parent root = fxmlLoader.load();
-        Scene scene = new Scene(root, 900, 750);
+        Scene scene = new Scene(root, WIDTH_SCENE, HEIGHT_SCENE);
         // Scene scene = new Scene(border);
         stage.setTitle("IMA - Taquin");
         stage.setScene(scene);

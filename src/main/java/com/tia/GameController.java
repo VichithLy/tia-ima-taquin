@@ -16,6 +16,8 @@ public class GameController {
     @FXML
     GridPane board;
     @FXML
+    GridPane solvedBoard;
+    @FXML
     private ComboBox strategy;
 
     private Game game;
@@ -26,7 +28,7 @@ public class GameController {
         strategy.setItems(FXCollections.observableList(Arrays.asList("Simple", "Cognitive")));
         strategy.getSelectionModel().selectFirst();
 
-        GridView.drawBoard(board);
+        GridView.drawBoards(board, solvedBoard);
     }
 
     @FXML
@@ -36,8 +38,7 @@ public class GameController {
         game = new Game(SIZE_BOARD, NUMBER_AGENTS, mode);
 
         reset();
-        GridView.drawBoard(board);
-        GridView.drawAgents(board, game.getAgents());
+        GridView.drawAgents(board, solvedBoard, game.getAgents());
     }
 
     @FXML
@@ -49,6 +50,7 @@ public class GameController {
     @FXML
     public void reset() {
         board.getChildren().clear();
-        GridView.drawBoard(board);
+        solvedBoard.getChildren().clear();
+        GridView.drawBoards(board, solvedBoard);
     }
 }

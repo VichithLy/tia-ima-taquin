@@ -28,36 +28,36 @@ public class Game extends Task<Void> {
     }
 
     private void initAgents(Grid grid, int agentsCount) {
-        List<Box> sources = new ArrayList<>();
+        List<Box> currents = new ArrayList<>();
         List<Box> destinations = new ArrayList<>();
 
         for (int i = 0; i < agentsCount; i++) {
             Random random = new Random();
-            int sourceX = random.nextInt(grid.getSize());
-            int sourceY = random.nextInt(grid.getSize());
-            Box source = new Box(sourceX, sourceY);
+            int currentX = random.nextInt(grid.getSize());
+            int currentY = random.nextInt(grid.getSize());
+            Box current = new Box(currentX, currentY);
 
-            while (sources.contains(source)) {
-                sourceX = random.nextInt(grid.getSize());
-                sourceY = random.nextInt(grid.getSize());
-                source = new Box(sourceX, sourceY);
+            while (currents.contains(current)) {
+                currentX = random.nextInt(grid.getSize());
+                currentY = random.nextInt(grid.getSize());
+                current = new Box(currentX, currentY);
             }
-            sources.add(source);
+            currents.add(current);
 
             int destinationX = random.nextInt(grid.getSize());
             int destinationY = random.nextInt(grid.getSize());
             Box destination = new Box(destinationX, destinationY);
 
-            while (sources.contains(destination) || destinations.contains(destination)) {
+            while (currents.contains(destination) || destinations.contains(destination)) {
                 destinationX = random.nextInt(grid.getSize());
                 destinationY = random.nextInt(grid.getSize());
                 destination = new Box(destinationX, destinationY);
             }
             destinations.add(destination);
 
-            Agent agent = new Agent(Symbol.getSymbolByCode(i), source, destination, source);
+            Agent agent = new Agent(Symbol.getSymbolByCode(i), current, destination);
             agents.add(agent);
-            grid.getBox(sourceX, sourceY).setAgent(agent);
+            grid.getBox(currentX, currentY).setAgent(agent);
         }
 
     }

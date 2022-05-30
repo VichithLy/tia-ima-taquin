@@ -1,6 +1,6 @@
 package com.tia.views;
-
 import com.tia.models.Agent;
+import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -13,68 +13,88 @@ import java.util.List;
 import static com.tia.Constants.*;
 
 public class GridView {
+
+
     private GridView() {
 
+    }
+
+    public static void resetBoards(GridPane board, GridPane solvedBoard) {
+        board.getChildren().clear();
+        solvedBoard.getChildren().clear();
+        GridView.drawBoards(board, solvedBoard);
+    }
+
+    public static void updateBoardsAndAgents(GridPane board, GridPane solvedBoard, List<Agent> agents) {
+        resetBoards(board, solvedBoard);
+        drawAgents(board, solvedBoard, agents);
     }
 
     public static void drawBoards(GridPane board, GridPane solvedBoard) {
         // https://edencoding.com/javafx-searching-grids/
         for (int column = 0; column < SIZE_BOARD; column++) {
             for (int row = 0; row < SIZE_BOARD; row++) {
-                Rectangle tile = new Rectangle(WIDTH_TILE - 1, WIDTH_TILE - 1);
-                tile.setStrokeWidth(0.5);
+                Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
                 tile.setStroke(Color.BLACK);
                 tile.setFill(Color.WHITE);
-
-                board.setColumnIndex(tile, column);
-                board.setRowIndex(tile, row);
+                // board.add(new StackPane(tile), column, row);
                 board.add(tile, column, row);
             }
         }
 
         for (int column = 0; column < SIZE_BOARD; column++) {
             for (int row = 0; row < SIZE_BOARD; row++) {
-                Rectangle tile = new Rectangle(WIDTH_TILE - 1, WIDTH_TILE - 1);
-                tile.setStrokeWidth(0.5);
+                Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
                 tile.setStroke(Color.BLACK);
                 tile.setFill(Color.WHITE);
-
-                solvedBoard.setColumnIndex(tile, column);
-                solvedBoard.setRowIndex(tile, row);
                 solvedBoard.add(tile, column, row);
             }
         }
+    }
+
+    public static StackPane createAgentStack(Agent agent) {
+        final int PADDING = 20;
+
+        Rectangle agentTile = new Rectangle(WIDTH_TILE - PADDING , WIDTH_TILE - PADDING);
+        agentTile.setFill(Color.LIGHTGRAY);
+        agentTile.setStrokeWidth(1);
+        agentTile.setStroke(Color.BLACK);
+
+        Text text = new Text(agent.getSymbol().getText());
+        text.setFont(Font.font(60));
+
+        StackPane agentStack = new StackPane(agentTile, text);
+
+        return agentStack;
     }
 
     public static void drawAgents(GridPane board, GridPane solvedBoard, List<Agent> agents) {
         for (Agent agent : agents) {
             System.out.println(agent.toString());
 
-            Rectangle tile = new Rectangle(WIDTH_TILE - 20 , WIDTH_TILE - 20);
-            tile.setFill(Color.LIGHTGRAY);
-            tile.setStrokeWidth(0);
+            StackPane agentStack = createAgentStack(agent);
 
-            Text text = new Text(agent.getSymbol().getText());
-            text.setFont(Font.font("Verdana", 60));
-            StackPane stack = new StackPane();
-            stack.getChildren().addAll(tile, text);
+            /*StackPane boardTile = (StackPane) getNodeByCoordinate(board, agent.getSource().getX(), agent.getSource().getY());
+            boardTile.getChildren().addAll(agentStack);*/
 
-            board.add(stack, agent.getSource().getX(), agent.getSource().getY());
+            board.add(agentStack, agent.getCurrent().getX(), agent.getCurrent().getY());
         }
 
         for (Agent agent : agents) {
-            Rectangle tile = new Rectangle(WIDTH_TILE - 20 , WIDTH_TILE - 20);
-            tile.setFill(Color.LIGHTGRAY);
-            tile.setStrokeWidth(0);
-
-            Text text = new Text(agent.getSymbol().getText());
-            text.setFont(Font.font("Verdana", 60));
-            StackPane stack = new StackPane();
-            stack.getChildren().addAll(tile, text);
-
-            solvedBoard.add(stack, agent.getDestination().getX(), agent.getDestination().getY());
+            StackPane agentStack = createAgentStack(agent);
+            solvedBoard.add(agentStack, agent.getDestination().getX(), agent.getDestination().getY());
         }
 
         System.out.println("\n------------\n");
+    }
+
+
+    public static Node getNodeByCoordinate(GridPane grid, Integer row, Integer column) {
+        for (Node node : grid.getChildren()) {
+            if(GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row){
+                return node;
+            }
+        }
+        return null;
     }
 }

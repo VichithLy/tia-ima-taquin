@@ -1,6 +1,7 @@
 package com.tia.models;
 
 import com.tia.enums.Symbol;
+import javafx.scene.layout.StackPane;
 
 public class Agent {
     private Symbol symbol;
@@ -8,9 +9,8 @@ public class Agent {
     private Box destination;
     private Box current;
 
-    public Agent(Symbol symbol, Box source, Box destination, Box current) {
+    public Agent(Symbol symbol, Box current, Box destination) {
         this.symbol = symbol;
-        this.source = source;
         this.destination = destination;
         this.current = current;
     }
@@ -19,21 +19,21 @@ public class Agent {
         return symbol;
     }
 
-    public Box getSource() {
-        return source;
-    }
 
     public Box getDestination() {
         return destination;
+    }
+
+    public Box getCurrent() {
+        return current;
     }
 
     @Override
     public String toString() {
         return "Agent{" +
                 "symbol=" + symbol +
-                ", source=" + source.toString() +
-                ", destination=" + destination.toString() +
                 ", current=" + current.toString() +
+                ", destination=" + destination.toString() +
                 '}';
     }
 }

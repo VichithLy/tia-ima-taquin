@@ -1,9 +1,13 @@
 package com.tia;
 
 import com.tia.enums.Mode;
+import com.tia.models.Agent;
+import com.tia.models.Box;
 import com.tia.models.Game;
 import com.tia.views.GridView;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
@@ -22,6 +26,7 @@ public class GameController {
 
     private Game game;
 
+    private ObservableList<Agent> agents;
 
     @FXML
     public void initialize() {
@@ -37,20 +42,26 @@ public class GameController {
 
         game = new Game(SIZE_BOARD, NUMBER_AGENTS, mode);
 
-        reset();
-        GridView.drawAgents(board, solvedBoard, game.getAgents());
+        agents = FXCollections.observableArrayList(game.getAgents());
+        agents.addListener((ListChangeListener.Change<? extends Agent> change) -> {
+            while (change.next()) {
+               GridView.updateBoardsAndAgents(board, solvedBoard, agents);
+            }
+        });
+
+        GridView.updateBoardsAndAgents(board, solvedBoard, agents);
     }
 
     @FXML
     public void run() {
-        Thread t = new Thread(game);
-        t.start();
+        /* Thread t = new Thread(game);
+        t.start();*/
+
+        agents.set(0, new Agent(agents.get(0).getSymbol(), new Box(0,0), agents.get(0).getDestination()));
     }
 
     @FXML
     public void reset() {
-        board.getChildren().clear();
-        solvedBoard.getChildren().clear();
-        GridView.drawBoards(board, solvedBoard);
+        GridView.resetBoards(board, solvedBoard);
     }
 }

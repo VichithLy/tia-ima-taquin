@@ -1,7 +1,6 @@
 package com.tia.models;
 
 import com.tia.enums.Symbol;
-import javafx.scene.layout.StackPane;
 
 public class Agent {
     private Symbol symbol;
@@ -12,6 +11,7 @@ public class Agent {
     public Agent(Symbol symbol, Box current, Box destination) {
         this.symbol = symbol;
         this.destination = destination;
+        this.source = current;
         this.current = current;
     }
 
@@ -19,6 +19,9 @@ public class Agent {
         return symbol;
     }
 
+    public Box getSource() {
+        return source;
+    }
 
     public Box getDestination() {
         return destination;
@@ -26,6 +29,22 @@ public class Agent {
 
     public Box getCurrent() {
         return current;
+    }
+
+    public void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
+    }
+
+    public void setSource(Box source) {
+        this.source = source;
+    }
+
+    public void setDestination(Box destination) {
+        this.destination = destination;
+    }
+
+    public void setCurrent(Box current) {
+        this.current = current;
     }
 
     @Override

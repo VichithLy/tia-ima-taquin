@@ -1,6 +1,7 @@
 package com.tia.views;
+
 import com.tia.models.Agent;
-import javafx.scene.Node;
+
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -30,24 +31,19 @@ public class GridView {
         drawAgents(board, solvedBoard, agents);
     }
 
+    public static void addTileToBoard(GridPane board, int column, int row) {
+        Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
+        tile.setStroke(Color.BLACK);
+        tile.setFill(Color.WHITE);
+        board.add(tile, column, row);
+    }
+
     public static void drawBoards(GridPane board, GridPane solvedBoard) {
         // https://edencoding.com/javafx-searching-grids/
         for (int column = 0; column < SIZE_BOARD; column++) {
             for (int row = 0; row < SIZE_BOARD; row++) {
-                Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
-                tile.setStroke(Color.BLACK);
-                tile.setFill(Color.WHITE);
-                // board.add(new StackPane(tile), column, row);
-                board.add(tile, column, row);
-            }
-        }
-
-        for (int column = 0; column < SIZE_BOARD; column++) {
-            for (int row = 0; row < SIZE_BOARD; row++) {
-                Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
-                tile.setStroke(Color.BLACK);
-                tile.setFill(Color.WHITE);
-                solvedBoard.add(tile, column, row);
+                addTileToBoard(board, column, row);
+                addTileToBoard(solvedBoard, column, row);
             }
         }
     }
@@ -73,10 +69,6 @@ public class GridView {
             System.out.println(agent.toString());
 
             StackPane agentStack = createAgentStack(agent);
-
-            /*StackPane boardTile = (StackPane) getNodeByCoordinate(board, agent.getSource().getX(), agent.getSource().getY());
-            boardTile.getChildren().addAll(agentStack);*/
-
             board.add(agentStack, agent.getCurrent().getX(), agent.getCurrent().getY());
         }
 
@@ -86,15 +78,5 @@ public class GridView {
         }
 
         System.out.println("\n------------\n");
-    }
-
-
-    public static Node getNodeByCoordinate(GridPane grid, Integer row, Integer column) {
-        for (Node node : grid.getChildren()) {
-            if(GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row){
-                return node;
-            }
-        }
-        return null;
     }
 }

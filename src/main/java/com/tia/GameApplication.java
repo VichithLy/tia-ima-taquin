@@ -6,6 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import static com.tia.Constants.*;
 
 public class GameApplication extends Application {

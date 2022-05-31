@@ -1,14 +1,13 @@
 package com.tia.models;
 
+import com.tia.GameUtils;
 import com.tia.enums.Mode;
 import com.tia.enums.Symbol;
-import javafx.concurrent.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class Game extends Task<Void> {
+public class Game {
     private int size;
     private Grid grid;
     private List<Agent> agents;
@@ -28,38 +27,31 @@ public class Game extends Task<Void> {
     }
 
     private void initAgents(Grid grid, int agentsCount) {
-        List<Box> currents = new ArrayList<>();
-        List<Box> destinations = new ArrayList<>();
+        final int SIZE_GRID = grid.getSize();
 
-        for (int i = 0; i < agentsCount; i++) {
-            Random random = new Random();
-            int currentX = random.nextInt(grid.getSize());
-            int currentY = random.nextInt(grid.getSize());
-            Box current = new Box(currentX, currentY);
-
-            while (currents.contains(current)) {
-                currentX = random.nextInt(grid.getSize());
-                currentY = random.nextInt(grid.getSize());
-                current = new Box(currentX, currentY);
-            }
-            currents.add(current);
-
-            int destinationX = random.nextInt(grid.getSize());
-            int destinationY = random.nextInt(grid.getSize());
-            Box destination = new Box(destinationX, destinationY);
-
-            while (currents.contains(destination) || destinations.contains(destination)) {
-                destinationX = random.nextInt(grid.getSize());
-                destinationY = random.nextInt(grid.getSize());
-                destination = new Box(destinationX, destinationY);
-            }
-            destinations.add(destination);
-
-            Agent agent = new Agent(Symbol.getSymbolByCode(i), current, destination);
-            agents.add(agent);
-            grid.getBox(currentX, currentY).setAgent(agent);
+        int[] gridCoords = new int[SIZE_GRID];
+        for (int i = 0; i < SIZE_GRID; i++) {
+            gridCoords[i] = i;
         }
 
+        List<int[]> currentPairs = GameUtils.getAllPossiblePairs(gridCoords);
+        List<int[]> destinationPairs = GameUtils.getAllPossiblePairs(gridCoords);
+
+        for (int i = 0; i < agentsCount; i++) {
+            // agent's current position
+            int[] randomCurrentPair = GameUtils.getRandomItemFromList(currentPairs);
+            Box current = new Box(randomCurrentPair[0], randomCurrentPair[1]);
+            currentPairs.remove(randomCurrentPair);
+            // agent's destination position
+            int[] randomDestinationPair = GameUtils.getRandomItemFromList(destinationPairs);
+            Box destination = new Box(randomDestinationPair[0], randomDestinationPair[1]);
+            destinationPairs.remove(randomDestinationPair);
+            // create agent with current and destination positions in grid
+            Agent agent = new Agent(Symbol.getSymbolByCode(i), current, destination);
+            agents.add(agent);
+            // put agent in grid's box
+            grid.getBox(current.getX(), current.getY()).setAgent(agent);
+        }
     }
 
     public void printStatus() {
@@ -76,26 +68,41 @@ public class Game extends Task<Void> {
         }
     }
 
-    public void printAgents() {
-        for (Agent agent : agents) {
-            System.out.println(agent.toString());
-        }
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public Grid getGrid() {
         return grid;
     }
 
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
     public List<Agent> getAgents() {
         return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    public Mode getMode() {
+        return mode;
     }
 
     public void setMode(Mode mode) {
         this.mode = mode;
     }
 
-    @Override
-    protected Void call() throws Exception {
-        return null;
+    public void printAgents() {
+        for (Agent agent : agents) {
+            System.out.println(agent.toString());
+        }
     }
 }

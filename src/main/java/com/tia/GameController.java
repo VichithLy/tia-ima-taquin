@@ -54,9 +54,6 @@ public class GameController {
 
     @FXML
     public void run() {
-        /* Thread t = new Thread(game);
-        t.start();*/
-
         agents.set(0, new Agent(agents.get(0).getSymbol(), new Box(0,0), agents.get(0).getDestination()));
     }
 

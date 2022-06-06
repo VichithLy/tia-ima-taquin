@@ -11,6 +11,10 @@ Notions :
   - synchronized vs semaphore : https://itsallbinary.com/java-synchronized-vs-semaphore/
   - https://www.baeldung.com/java-start-two-threads-at-same-time
   - https://www.baeldung.com/java-timer-and-timertask
+- Algorithme de plus court chemin (matrice)
+  - https://www.geeksforgeeks.org/find-whether-path-two-cells-matrix/?ref=lbp
+  - https://www.youtube.com/watch?v=2JNEme00ZFA
+  - https://www.geeksforgeeks.org/check-possible-path-2d-matrix/
 
 TODO :
 

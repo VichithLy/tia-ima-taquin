@@ -20,3 +20,5 @@ TODO :
   - [ ] Nombre d'étapes de l'agent
   - [ ] Mettre à jour la vue à chaque fin d'étape
   - [ ] Fin du jeu si agent atteint sa destination
+- [ ] Grille en variable partagée (static)
+  - [ ] Current et Destination sont des cases de cette grille (ex : Grid.getBox(x, y))

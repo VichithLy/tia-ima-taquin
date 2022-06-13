@@ -24,3 +24,9 @@ TODO :
   - [ ] Nombre d'étapes de l'agent
   - [ ] Mettre à jour la vue à chaque fin d'étape
   - [ ] Fin du jeu si agent atteint sa destination
+- Grille variable partagée par tous les agents
+  - [ ] static attributes
+- [ ] Source et Destination agents dans Box de Grid
+- [ ] Mouvements des agents
+- [ ] Détecter quand tous les agents ont atteint leur destination
+  - [ ] Boucle fin du jeu

@@ -1,6 +1,6 @@
 package com.tia.enums;
 
-public enum Symbol {
+public enum Letter {
     A(0, "A"), B(1, "B"), C(2, "C"),
     D(3, "D"), E(4, "E"), F(5, "F"),
     G(6, "G"), H(7, "H"), I(8, "I"),
@@ -14,13 +14,13 @@ public enum Symbol {
     private int code;
     private String text;
 
-    Symbol(int code, String text) {
+    Letter(int code, String text) {
         this.code = code;
         this.text = text;
     }
 
-    public static Symbol getSymbolByCode(int code) {
-        for (Symbol symbol : Symbol.values()) {
+    public static Letter getLetterByCode(int code) {
+        for (Letter symbol : Letter.values()) {
             if (symbol.code == code) {
                 return symbol;
             }

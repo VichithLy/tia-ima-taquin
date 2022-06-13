@@ -2,6 +2,7 @@ package com.tia.views;
 
 import com.tia.models.Agent;
 
+import com.tia.models.Game;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -14,40 +15,78 @@ import java.util.List;
 import static com.tia.Constants.*;
 
 public class GridView {
+    private GridView() {}
 
+    /**
+     * @param initialBoard
+     * @param solvedBoard
+     */
+    public static void drawAgentsInBoards(GridPane initialBoard, GridPane solvedBoard) {
+        // IMPORTANT: in 2D arrays, rows come first (y,x)
+        // We have to reverse x and y in agent's coords
 
-    private GridView() {
+        List<Agent> agents = Game.getAgents();
 
+        for (Agent agent : agents) {
+            StackPane agentStack = createAgentStack(agent);
+            initialBoard.add(agentStack, agent.getCurrent().getY(), agent.getCurrent().getX());
+        }
+
+        for (Agent agent : agents) {
+            StackPane agentStack = createAgentStack(agent);
+            solvedBoard.add(agentStack, agent.getDestination().getY(), agent.getDestination().getX());
+        }
     }
 
-    public static void resetBoards(GridPane board, GridPane solvedBoard) {
-        board.getChildren().clear();
-        solvedBoard.getChildren().clear();
-        GridView.drawBoards(board, solvedBoard);
+    /**
+     * @param initialBoard
+     * @param solvedBoard
+     */
+    public static void createOrUpdateBoardsAndAgents(GridPane initialBoard, GridPane solvedBoard) {
+        resetBoards(initialBoard, solvedBoard);
+        drawAgentsInBoards(initialBoard, solvedBoard);
     }
 
-    public static void updateBoardsAndAgents(GridPane board, GridPane solvedBoard, List<Agent> agents) {
-        resetBoards(board, solvedBoard);
-        drawAgents(board, solvedBoard, agents);
-    }
-
-    public static void addTileToBoard(GridPane board, int column, int row) {
+    /**
+     * @param board
+     * @param column
+     * @param row
+     */
+    private static void addTileToBoard(GridPane board, int column, int row) {
         Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
         tile.setStroke(Color.BLACK);
         tile.setFill(Color.WHITE);
         board.add(tile, column, row);
     }
 
-    public static void drawBoards(GridPane board, GridPane solvedBoard) {
+    /**
+     * @param initialBoard
+     * @param solvedBoard
+     */
+    public static void drawBoards(GridPane initialBoard, GridPane solvedBoard) {
         // https://edencoding.com/javafx-searching-grids/
         for (int column = 0; column < SIZE_BOARD; column++) {
             for (int row = 0; row < SIZE_BOARD; row++) {
-                addTileToBoard(board, column, row);
+                addTileToBoard(initialBoard, column, row);
                 addTileToBoard(solvedBoard, column, row);
             }
         }
     }
 
+    /**
+     * @param initialBoard
+     * @param solvedBoard
+     */
+    public static void resetBoards(GridPane initialBoard, GridPane solvedBoard) {
+        initialBoard.getChildren().clear();
+        solvedBoard.getChildren().clear();
+        GridView.drawBoards(initialBoard, solvedBoard);
+    }
+
+    /**
+     * @param agent
+     * @return StackPane
+     */
     public static StackPane createAgentStack(Agent agent) {
         final int PADDING = 20;
 
@@ -56,7 +95,7 @@ public class GridView {
         agentTile.setStrokeWidth(1);
         agentTile.setStroke(Color.BLACK);
 
-        Text text = new Text(agent.getSymbol().getText());
+        Text text = new Text(agent.getValue().getText());
         text.setFont(Font.font(60));
 
         StackPane agentStack = new StackPane(agentTile, text);
@@ -64,19 +103,5 @@ public class GridView {
         return agentStack;
     }
 
-    public static void drawAgents(GridPane board, GridPane solvedBoard, List<Agent> agents) {
-        for (Agent agent : agents) {
-            System.out.println(agent.toString());
 
-            StackPane agentStack = createAgentStack(agent);
-            board.add(agentStack, agent.getCurrent().getX(), agent.getCurrent().getY());
-        }
-
-        for (Agent agent : agents) {
-            StackPane agentStack = createAgentStack(agent);
-            solvedBoard.add(agentStack, agent.getDestination().getX(), agent.getDestination().getY());
-        }
-
-        System.out.println("\n------------\n");
-    }
 }

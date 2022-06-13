@@ -8,13 +8,16 @@ public class Grid {
     public Grid(int size) {
         this.size = size;
 
+        // IMPORTANT: in 2D arrays, rows come first (y,x)
         boxes = new Box[size][size];
-        for (int i = 0; i < boxes.length; i++) {
-            for (int j = 0; j < boxes[i].length; j++) {
-                boxes[i][j] = new Box(i, j);
+        for (int column = 0; column < boxes.length; column++) {
+            for (int row = 0; row < boxes[column].length; row++) {
+                boxes[column][row] = new Box(column, row);
             }
         }
     }
+
+    // Getters & Setters
 
     public Box getBox(int x, int y)  {
         return boxes[x][y];

@@ -13,6 +13,8 @@ public class Box {
         this.agent = null;
     }
 
+    // Getters & Setters
+
     public Agent getAgent() {
         return agent;
     }
@@ -28,6 +30,8 @@ public class Box {
     public int getY() {
         return y;
     }
+
+    // Functions
 
     /**
      * Check if the param Object is a Box

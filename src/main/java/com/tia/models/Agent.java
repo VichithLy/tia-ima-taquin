@@ -1,14 +1,16 @@
 package com.tia.models;
 
-import com.tia.GameUtils;
 import com.tia.enums.Direction;
 import com.tia.enums.Letter;
+import com.tia.strategies.Context;
+import com.tia.strategies.NaiveStrategy;
 
 public class Agent {
     private Letter value;
     private Box source;
     private Box destination;
     private Box current;
+    private Context context;
 
     public Agent(Letter value, Box current, Box destination) {
         this.value = value;
@@ -82,24 +84,24 @@ public class Agent {
 
        if (direction.equals(Direction.NORTH)) {
            value = (current.getX() > 0);
-           GameUtils.print("NORTH", value);
        } else if (direction.equals(Direction.SOUTH)) {
            value = (current.getX() < gridMaxIndex);
-           GameUtils.print("SOUTH", value);
        } else if (direction.equals(Direction.WEST)) {
            value = (current.getY() > 0);
-           GameUtils.print("WEST", value);
        } else if (direction.equals(Direction.EAST)) {
            value = (current.getY() < gridMaxIndex);
-           GameUtils.print("EAST", value);
        }
 
         return value;
     }
 
     public boolean isArrived() {
-        GameUtils.print("isArrived", (current.equals(destination)));
         return (current.equals(destination));
+    }
+
+    public void solve() {
+        context = new Context(new NaiveStrategy());
+        context.executeStrategy(this);
     }
 
     // Getters & Setters

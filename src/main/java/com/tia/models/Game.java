@@ -1,8 +1,8 @@
 package com.tia.models;
 
 import com.tia.GameUtils;
-import com.tia.enums.Mode;
 import com.tia.enums.Letter;
+import com.tia.enums.Strategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,19 +11,19 @@ public final class Game {
     private static int gridSize;
     private static Grid grid;
     private static List<Agent> agents;
-    private static Mode mode;
+    private static Strategy strategy;
 
     /**
      * Constructor of Game
      * @param gridSize
      * @param agentsCount
-     * @param mode
+     * @param strategy
      */
-    public static void init(int gridSize, int agentsCount, Mode mode) {
+    public static void init(int gridSize, int agentsCount, Strategy strategy) {
         setGridSize(gridSize);
         setGrid(new Grid(gridSize));
         setAgents(new ArrayList<>());
-        setMode(mode);
+        setStrategy(strategy);
 
         initAgents(grid, agentsCount);
     }
@@ -122,11 +122,11 @@ public final class Game {
         Game.agents = agents;
     }
 
-    public static Mode getMode() {
-        return mode;
+    public static Strategy getStrategy() {
+        return strategy;
     }
 
-    public static void setMode(Mode mode) {
-        Game.mode = mode;
+    public static void setStrategy(Strategy strategy) {
+        Game.strategy = strategy;
     }
 }

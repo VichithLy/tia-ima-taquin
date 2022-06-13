@@ -53,7 +53,7 @@
                         <Insets top="10.0" />
                     </GridPane.margin>
                 </Label>
-            <ComboBox fx:id="strategy" prefWidth="120.0" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+            <ComboBox fx:id="chosenStrategy" prefWidth="120.0" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="10.0" />
                </GridPane.margin></ComboBox>
@@ -61,7 +61,7 @@
             <Button mnemonicParsing="false" onAction="#right" text="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
             <Button mnemonicParsing="false" onAction="#down" text="DOWN" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
             <Button mnemonicParsing="false" onAction="#up" text="UP" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <ComboBox fx:id="agentsCount" layoutX="25.0" layoutY="69.0" prefWidth="120.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+            <ComboBox fx:id="chosenAgentsNumber" layoutX="25.0" layoutY="69.0" prefWidth="120.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
             </children>
         </GridPane>
       <GridPane prefWidth="1000.0">

@@ -18,15 +18,39 @@ Notions :
 
 TODO :
 
-- [ ] Taquin avec 1 agent
-  - [ ] Algo de path finding (A\* ou Dijkstra ou Col/Ligne)
-  - [ ] Thread
-  - [ ] Nombre d'étapes de l'agent
-  - [ ] Mettre à jour la vue à chaque fin d'étape
-  - [ ] Fin du jeu si agent atteint sa destination
-- Grille variable partagée par tous les agents
-  - [ ] static attributes
-- [ ] Source et Destination agents dans Box de Grid
-- [ ] Mouvements des agents
-- [ ] Détecter quand tous les agents ont atteint leur destination
-  - [ ] Boucle fin du jeu
+- [x] Taquin avec 1 agent
+  - [x] Algo de path finding (A\* ou Dijkstra ou Col/Ligne ou BFS)
+  - [x] Thread
+  - [x] Mettre à jour la vue à chaque fin d'étape
+  - [x] Fin du jeu si agent atteint sa destination
+  - Grille partagée par tous les agents
+  - [x] Source et Destination agents dans Box de Grid
+  - [x] Mouvements des agents
+
+
+- [ ] GUI
+  - Nombre d'agents
+  - Stratégie
+  
+------
+  
+- [ ] Taquin avec >1 agents
+  - [ ] Algorithme BFS
+  - [ ] Convertir le chemin BFS en suite de directions
+  - [ ] Multithreading
+    - [ ] Semaphore pour chaque Box
+    - [ ] Fonctionnement en ronde
+    - [ ] Mise à jour GUI à la fin d'une ronde
+    - [ ] Gestions priorité quand concurrence Box
+  - [ ] Détecter quand tous les agents ont atteint leur destination
+  - [ ] Compteur de rondes
+  
+------
+
+- [ ] Strategy Pattern
+  - [x] Naive
+  - [ ] Simple
+  - [ ] Cognitive
+
+- [ ] Priorités des agents
+   

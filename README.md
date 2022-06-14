@@ -1,6 +1,7 @@
 Notions :
 
-- Thread / Multithreading
+- Thread / Multithreading :
+  - https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
 - Ressource partagée
 - Mutex
 - Sémaphore
@@ -15,6 +16,7 @@ Notions :
   - https://www.geeksforgeeks.org/find-whether-path-two-cells-matrix/?ref=lbp
   - https://www.youtube.com/watch?v=2JNEme00ZFA
   - https://www.geeksforgeeks.org/check-possible-path-2d-matrix/
+- Synchronized methods
 
 TODO :
 
@@ -29,8 +31,9 @@ TODO :
 
 
 - [ ] GUI
-  - Nombre d'agents
-  - Stratégie
+  - [x] Nombre d'agents
+  - [x] Stratégie
+  - [ ] Temps entre chaque étape
   
 ------
   
@@ -49,7 +52,12 @@ TODO :
 
 - [ ] Strategy Pattern
   - [x] Naive
+    - Agent rejoint ligne en premier, puis colonne (possibilité choix aléatoire)
+    - Agent ne peut pas se déplacer sur case qui contient un agent
+    - n=1 OK mais si situations de blocages augments quand n croit
   - [ ] Simple
+    - Avant de se déplacer, Agent cherche le meilleur chemin vers destination (plus court)
+      - Path finding avec ou sans contournement d'obstacle (autre Agent) ?
   - [ ] Cognitive
 
 - [ ] Priorités des agents

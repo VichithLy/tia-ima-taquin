@@ -19,13 +19,13 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
 
 import static com.tia.Constants.SIZE_BOARD;
 
 public class GameController {
     Boolean gameIsInit = false;
     Boolean exitGame; // https://www.geeksforgeeks.org/killing-threads-in-java/
+    int stepsCount = 0;
 
     @FXML
     GridPane board;
@@ -45,54 +45,41 @@ public class GameController {
 
     @FXML
     public void init() {
+        stepsCount = 0;
         gameIsInit = true;
 
         Game.init(SIZE_BOARD, (int) chosenAgentsNumber.getValue(), returnSelectedStrategyContext());
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
 
-        Game.printAgents();
-        Game.printStatus();
+        // printStatus();
     }
 
     @FXML
     public void up() {
-        // Game.getAgents().get(0).move(Direction.NORTH);
+        Agent agent = Game.getAgents().get(0);
 
-        Game.printAgents();
-        Game.printStatus();
-        GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
+        SimpleStrategy strategy = new SimpleStrategy();
+        System.out.println("findPath=" + strategy.BFS(agent));
     }
 
     @FXML
     public void down() {
-        // Game.getAgents().get(0).move(Direction.SOUTH);
-
-        Game.printAgents();
-        Game.printStatus();
-        GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
     }
 
     @FXML
     public void left() {
-        // Game.getAgents().get(0).move(Direction.WEST);
-
-        Game.printAgents();
-        Game.printStatus();
-        GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
     }
 
     @FXML
     public void right() {
-        // Game.getAgents().get(0).move(Direction.EAST);
-
         Agent agent = Game.getAgents().get(0);
 
         NaiveStrategy strategy = new NaiveStrategy();
         strategy.move(agent, Direction.EAST);
 
-        Game.printAgents();
-        Game.printStatus();
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
+
+        printStatus();
     }
 
     @FXML
@@ -105,8 +92,9 @@ public class GameController {
                     executeAgentsThreadPool();
                     runCreateOrUpdateBoardsAndAgentsThread();
                     sleepMillis(1000);
+                    stepsCount++;
 
-                    System.out.println("=====");
+                    printStatus();
                 }
 
                 if (!exitGame) {
@@ -122,6 +110,7 @@ public class GameController {
 
     @FXML
     public void reset() {
+        stepsCount = 0;
         exitGame = true;
         GridView.resetBoards(board, solvedBoard);
     }
@@ -146,8 +135,6 @@ public class GameController {
         Platform.runLater(() -> {
             GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
         });
-
-        Game.printStatus();
     }
 
     /**
@@ -196,8 +183,19 @@ public class GameController {
             case "Cognitive" -> context = new Context(new CognitiveStrategy());
         }
 
-        System.out.println((String) chosenStrategy.getValue());
-
         return context;
+    }
+
+    public void printParams() {
+        System.out.println("Strategy=" + chosenStrategy.getValue());
+        System.out.println("Number of agents=" + chosenAgentsNumber.getValue());
+    }
+
+    public void printStatus() {
+        System.out.println("=================");
+        System.out.println("Step number=" + stepsCount);
+        printParams();
+        Game.printAgents();
+        Game.printGrid();
     }
 }

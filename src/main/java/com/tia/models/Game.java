@@ -67,20 +67,19 @@ public final class Game {
     }
 
     public static void testAgents() {
-
-        Box current = grid.getBox(0, 0); // TO CHANGE
+        Box current = grid.getBox(1, 1); // TO CHANGE
         Box destination = grid.getBox(1, 4);
         Agent agent = new Agent(Letter.getLetterByCode(0), current, destination, context);
 
         current.setAgent(agent);
         agents.add(agent);
 
-        Box current2 = grid.getBox(0, 2); // TO CHANGE
+        /*Box current2 = grid.getBox(0, 2); // TO CHANGE
         Box destination2 = grid.getBox(2, 2);
         Agent agent2 = new Agent(Letter.getLetterByCode(1), current2, destination2, context);
 
         current2.setAgent(agent2);
-        agents.add(agent2);
+        agents.add(agent2);*/
     }
 
     /**
@@ -90,15 +89,6 @@ public final class Game {
      */
     public static Agent getAgent(int index) {
         return getAgents().get(index);
-    }
-
-    /**
-     * Print agents objets in current game
-     */
-    public static void printAgents() {
-        for (Agent agent : agents) {
-            System.out.println(agent.toString());
-        }
     }
 
     public static boolean isSolved() {
@@ -112,11 +102,21 @@ public final class Game {
         return (solvedAgents.size() == agents.size());
     }
 
+    // Print
+
+    /**
+     * Print agents objets in current game
+     */
+    public static void printAgents() {
+        for (Agent agent : agents) {
+            System.out.println(agent.toString());
+        }
+    }
+
     /**
      * Print grid's status
      */
-    public static void printStatus() {
-        System.out.println("==============");
+    public static void printGrid() {
         for (Box[] boxes : grid.getBoxes()) {
             for (Box box : boxes) {
                 // System.out.print(box + " ");
@@ -125,13 +125,12 @@ public final class Game {
                     // System.out.print("0 ");
                     System.out.print(box + " ");
                 } else {
-                    System.out.print(box.getAgent().getValue() + "" + box + " ");
+                    System.out.print("  " + box.getAgent().getValue() + "   ");
                     // System.out.print(y.getAgent().toString() + " ");
                 }
             }
             System.out.println();
         }
-        System.out.println("==============");
     }
 
     // Getters & Setters

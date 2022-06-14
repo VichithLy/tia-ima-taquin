@@ -1,7 +1,7 @@
 package com.tia.enums;
 
 public enum Letter {
-    A(0, "A"), B(1, "B"), C(2, "C"),
+    NULL(-1, ""), A(0, "A"), B(1, "B"), C(2, "C"),
     D(3, "D"), E(4, "E"), F(5, "F"),
     G(6, "G"), H(7, "H"), I(8, "I"),
     J(9, "J"), K(10, "K"), L(11, "L"),

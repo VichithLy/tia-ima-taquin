@@ -14,7 +14,7 @@ public class NaiveStrategy implements Strategy {
      * Check if Agent can move to Box (inside board's bounds).
      * and destination Box is empty (no other Agent).
      *
-     * @param agent Agent
+     * @param agent     Agent
      * @param direction Direction
      */
     @Override

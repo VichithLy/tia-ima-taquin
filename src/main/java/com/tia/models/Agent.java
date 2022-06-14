@@ -3,7 +3,6 @@ package com.tia.models;
 import com.tia.enums.Direction;
 import com.tia.enums.Letter;
 import com.tia.strategies.Context;
-import com.tia.strategies.NaiveStrategy;
 
 public class Agent {
     private Letter value;
@@ -12,11 +11,12 @@ public class Agent {
     private Box current;
     private Context context;
 
-    public Agent(Letter value, Box current, Box destination) {
+    public Agent(Letter value, Box current, Box destination, Context context) {
         this.value = value;
         this.destination = destination;
         this.source = current;
         this.current = current;
+        this.context = context;
     }
 
     // Methods
@@ -100,7 +100,7 @@ public class Agent {
     }
 
     public void solve() {
-        context = new Context(new NaiveStrategy());
+        System.out.println(context);
         context.executeStrategy(this);
     }
 

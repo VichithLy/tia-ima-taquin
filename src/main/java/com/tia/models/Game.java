@@ -3,6 +3,7 @@ package com.tia.models;
 import com.tia.GameUtils;
 import com.tia.enums.Letter;
 import com.tia.enums.Strategy;
+import com.tia.strategies.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,21 +12,21 @@ public final class Game {
     private static int gridSize;
     private static Grid grid;
     private static List<Agent> agents;
-    private static Strategy strategy;
+    private static Context context;
 
     /**
      * Constructor of Game
      * @param gridSize
      * @param agentsCount
-     * @param strategy
+     * @param context
      */
-    public static void init(int gridSize, int agentsCount, Strategy strategy) {
+    public static void init(int gridSize, int agentsCount, Context context) {
         setGridSize(gridSize);
         setGrid(new Grid(gridSize));
         setAgents(new ArrayList<>());
-        setStrategy(strategy);
+        setContext(context);
 
-        initAgents(grid, agentsCount);
+        initAgents(grid, agentsCount, context);
     }
 
     /**
@@ -33,7 +34,7 @@ public final class Game {
      * @param grid
      * @param agentsCount
      */
-    private static void initAgents(Grid grid, int agentsCount) {
+    private static void initAgents(Grid grid, int agentsCount, Context context) {
         final int SIZE_GRID = grid.getSize();
 
         int[] gridCoords = new int[SIZE_GRID];
@@ -56,7 +57,7 @@ public final class Game {
             destinationPairs.remove(randomDestinationPair);
 
             // create agent with current and destination positions in grid
-            Agent agent = new Agent(Letter.getLetterByCode(i), current, destination);
+            Agent agent = new Agent(Letter.getLetterByCode(i), current, destination, context);
             current.setAgent(agent);
             agents.add(agent);
 
@@ -122,11 +123,11 @@ public final class Game {
         Game.agents = agents;
     }
 
-    public static Strategy getStrategy() {
-        return strategy;
+    public static Context getContext() {
+        return context;
     }
 
-    public static void setStrategy(Strategy strategy) {
-        Game.strategy = strategy;
+    public static void setContext(Context context) {
+        Game.context = context;
     }
 }

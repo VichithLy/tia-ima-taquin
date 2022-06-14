@@ -15,19 +15,19 @@ public class Box {
 
     // Getters & Setters
 
-    public Agent getAgent() {
+    public synchronized Agent getAgent() {
         return agent;
     }
 
-    public void setAgent(Agent agent) {
+    public synchronized void setAgent(Agent agent) {
         this.agent = agent;
     }
 
-    public int getX() {
+    public synchronized int getX() {
         return x;
     }
 
-    public int getY() {
+    public synchronized int getY() {
         return y;
     }
 

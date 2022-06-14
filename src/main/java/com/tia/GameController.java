@@ -1,7 +1,6 @@
 package com.tia;
 
 import com.tia.enums.Direction;
-import com.tia.enums.Strategy;
 import com.tia.models.Agent;
 import com.tia.models.Game;
 import com.tia.strategies.CognitiveStrategy;
@@ -17,6 +16,10 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 import static com.tia.Constants.SIZE_BOARD;
 
@@ -53,7 +56,7 @@ public class GameController {
 
     @FXML
     public void up() {
-        Game.getAgents().get(0).move(Direction.NORTH);
+        // Game.getAgents().get(0).move(Direction.NORTH);
 
         Game.printAgents();
         Game.printStatus();
@@ -62,7 +65,7 @@ public class GameController {
 
     @FXML
     public void down() {
-        Game.getAgents().get(0).move(Direction.SOUTH);
+        // Game.getAgents().get(0).move(Direction.SOUTH);
 
         Game.printAgents();
         Game.printStatus();
@@ -71,7 +74,7 @@ public class GameController {
 
     @FXML
     public void left() {
-        Game.getAgents().get(0).move(Direction.WEST);
+        // Game.getAgents().get(0).move(Direction.WEST);
 
         Game.printAgents();
         Game.printStatus();
@@ -80,7 +83,12 @@ public class GameController {
 
     @FXML
     public void right() {
-        Game.getAgents().get(0).move(Direction.EAST);
+        // Game.getAgents().get(0).move(Direction.EAST);
+
+        Agent agent = Game.getAgents().get(0);
+
+        NaiveStrategy strategy = new NaiveStrategy();
+        strategy.move(agent, Direction.EAST);
 
         Game.printAgents();
         Game.printStatus();
@@ -89,43 +97,27 @@ public class GameController {
 
     @FXML
     public void run() {
-        // TODO Run
-        // TODO While puzzle not complete
-        // TODO Agents solving
-
         if (gameIsInit) {
-            Agent agent = Game.getAgents().get(0);
+            exitGame = false;
 
             Runnable runnable = () -> {
-                System.out.println("Inside : " + Thread.currentThread().getName());
+                while (!Game.isSolved() && !exitGame) {
+                    executeAgentsThreadPool();
+                    runCreateOrUpdateBoardsAndAgentsThread();
+                    sleepMillis(1000);
 
-                while (!agent.isArrived() && !exitGame) {
-                    agent.solve();
-                    Platform.runLater(() -> {
-                        GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
-                    });
                     System.out.println("=====");
-
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        throw new IllegalStateException(e);
-                    }
                 }
 
                 if (!exitGame) {
-                    System.out.println("Agent is arrived at destination!");
-
-                    Platform.runLater(() -> {
-                        GridView.showAlertWithHeaderText();
-                    });
+                    System.out.println("Board solved!");
+                    runShowAlertSolvedBoardThread();
                 }
-
             };
-            exitGame = false;
             Thread thread = new Thread(runnable);
             thread.start();
         }
+
     }
 
     @FXML
@@ -134,7 +126,52 @@ public class GameController {
         GridView.resetBoards(board, solvedBoard);
     }
 
-    // ==========
+    // Threads
+
+    public void sleepMillis(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public void runShowAlertSolvedBoardThread() {
+        Platform.runLater(() -> {
+            GridView.showAlertSolvedBoard();
+        });
+    }
+
+    public void runCreateOrUpdateBoardsAndAgentsThread() {
+        Platform.runLater(() -> {
+            GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
+        });
+
+        Game.printStatus();
+    }
+
+    /**
+     * https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
+     */
+    public void executeAgentsThreadPool() {
+        CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
+        ExecutorService executor = Executors.newFixedThreadPool(Game.getAgents().size());
+
+        for (Agent agent : Game.getAgents()) {
+            agent.setLatch(latch);
+            executor.execute(agent);
+        }
+
+        executor.shutdown();
+
+        try {
+            latch.await();
+        } catch(InterruptedException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    // Utils
 
     public void initStrategiesAndSetDefault() {
         chosenStrategy.setItems(FXCollections.observableList(Arrays.asList("Naive", "Simple", "Cognitive")));

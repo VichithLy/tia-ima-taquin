@@ -1,15 +1,18 @@
 package com.tia.models;
 
-import com.tia.enums.Direction;
 import com.tia.enums.Letter;
 import com.tia.strategies.Context;
 
-public class Agent {
+import java.util.concurrent.CountDownLatch;
+
+public class Agent implements Runnable {
     private Letter value;
     private Box source;
     private Box destination;
     private Box current;
-    private Context context;
+    private final Context context;
+
+    private CountDownLatch latch;
 
     public Agent(Letter value, Box current, Box destination, Context context) {
         this.value = value;
@@ -21,86 +24,11 @@ public class Agent {
 
     // Methods
 
-    public void move(Direction direction) {
-        Grid grid = Game.getGrid();
-        Box oldBox = grid.getBox(current.getX(), current.getY());
-
-        if (!isArrived()) {
-            switch (direction) {
-                case NORTH:
-                    if (canMove(Direction.NORTH)) {
-                        System.out.println("Move NORTH");
-                        // Agent
-                        setCurrent(grid.getBox(current.getX() - 1, current.getY()));
-                        // Grid
-                        Box newBox = grid.getBox(current.getX(), current.getY());
-                        newBox.setAgent(oldBox.getAgent());
-                        oldBox.setAgent(null);
-                    }
-                    break;
-
-                case SOUTH:
-                    if (canMove(Direction.SOUTH)) {
-                        System.out.println("Move SOUTH");
-                        // Agent
-                        setCurrent(grid.getBox(current.getX() + 1, current.getY()));
-                        // Grid
-                        Box newBox = grid.getBox(current.getX(), current.getY());
-                        newBox.setAgent(oldBox.getAgent());
-                        oldBox.setAgent(null);
-                    }
-                    break;
-
-                case WEST:
-                    if (canMove(Direction.WEST)) {
-                        System.out.println("Move WEST");
-                        // Agent
-                        setCurrent(grid.getBox(current.getX(), current.getY() - 1));
-                        // Grid
-                        Box newBox = grid.getBox(current.getX(), current.getY());
-                        newBox.setAgent(oldBox.getAgent());
-                        oldBox.setAgent(null);
-                    }
-                    break;
-
-                case EAST:
-                    if (canMove(Direction.EAST)) {
-                        System.out.println("Move EAST");
-                        // Agent
-                        setCurrent(grid.getBox(current.getX(), current.getY() + 1));
-                        // Grid
-                        Box newBox = grid.getBox(current.getX(), current.getY());
-                        newBox.setAgent(oldBox.getAgent());
-                        oldBox.setAgent(null);
-                    }
-                    break;
-            }
-        }
-    }
-
-    private boolean canMove(Direction direction) {
-        Boolean value = false;
-        int gridMaxIndex = Game.getGrid().getSize() - 1;
-
-       if (direction.equals(Direction.NORTH)) {
-           value = (current.getX() > 0);
-       } else if (direction.equals(Direction.SOUTH)) {
-           value = (current.getX() < gridMaxIndex);
-       } else if (direction.equals(Direction.WEST)) {
-           value = (current.getY() > 0);
-       } else if (direction.equals(Direction.EAST)) {
-           value = (current.getY() < gridMaxIndex);
-       }
-
-        return value;
-    }
-
     public boolean isArrived() {
         return (current.equals(destination));
     }
 
     public void solve() {
-        System.out.println(context);
         context.executeStrategy(this);
     }
 
@@ -110,32 +38,40 @@ public class Agent {
         return value;
     }
 
-    public Box getSource() {
-        return source;
-    }
-
-    public Box getDestination() {
-        return destination;
-    }
-
-    public Box getCurrent() {
-        return current;
-    }
-
     public void setValue(Letter value) {
         this.value = value;
+    }
+
+    public Box getSource() {
+        return source;
     }
 
     public void setSource(Box source) {
         this.source = source;
     }
 
+    public Box getDestination() {
+        return destination;
+    }
+
     public void setDestination(Box destination) {
         this.destination = destination;
     }
 
+    public Box getCurrent() {
+        return current;
+    }
+
     public void setCurrent(Box current) {
         this.current = current;
+    }
+
+    public CountDownLatch getLatch() {
+        return latch;
+    }
+
+    public void setLatch(CountDownLatch latch) {
+        this.latch = latch;
     }
 
     // Functions
@@ -147,5 +83,14 @@ public class Agent {
                 ", current=" + current.toString() +
                 ", destination=" + destination.toString() +
                 '}';
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Agent running...");
+
+        solve();
+
+        this.latch.countDown();
     }
 }

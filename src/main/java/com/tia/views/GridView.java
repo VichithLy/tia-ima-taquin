@@ -107,15 +107,12 @@ public class GridView {
     /**
      * https://devstory.net/11529/javafx-alert-dialog
      */
-    public static void showAlertWithHeaderText() {
+    public static void showAlertSolvedBoard() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("TIA - Puzzle - Taquin");
-        alert.setHeaderText("Results:");
+        alert.setHeaderText("Results");
         alert.setContentText("Board solved successfully!");
 
         alert.showAndWait();
     }
-
-
-
 }

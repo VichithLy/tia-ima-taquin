@@ -1,7 +1,6 @@
 package com.tia.strategies;
 
 import com.tia.enums.Direction;
-import com.tia.enums.Letter;
 import com.tia.models.Agent;
 import com.tia.models.Box;
 import com.tia.models.Game;
@@ -12,21 +11,40 @@ import java.util.*;
 public class SimpleStrategy implements Strategy {
     @Override
     public void move(Agent agent, Direction direction) {
-
+        NaiveStrategy strategy = new NaiveStrategy();
+        strategy.move(agent, direction);
     }
 
     @Override
     public void solve(Agent agent) {
-        System.out.println("SimpleStrategy");
+        // System.out.println("SimpleStrategy");
+
+        List<Box> path = findPath(agent);
+        List<Direction> directions = convertPathToDirections(path);
+
+        agent.setPathDirections(directions);
+
+        // System.out.println(agent.getPathDirections());
+
+        if (directions.size() != 0) {
+            // System.out.println(directions.get(0));
+            move(agent, directions.get(0));
+        }
+
+        /*NaiveStrategy strategy = new NaiveStrategy();
+        strategy.solve(agent);*/
     }
 
     /**
-     * BFS: https://www.youtube.com/watch?v=KiCBXu4P-2Y
-     * Queue: https://www.delftstack.com/fr/howto/java/enqueue-and-dequeue-java/
-     * Reconstruct path: https://stackoverflow.com/questions/61113331/bfs-search-in-2d-grid-java-shortest-path
+     * BFS path finding algorithm <br>
+     * - BFS: https://www.youtube.com/watch?v=KiCBXu4P-2Y <br>
+     * - Queue: https://www.delftstack.com/fr/howto/java/enqueue-and-dequeue-java/ <br>
+     * - Reconstruct path: https://stackoverflow.com/questions/61113331/bfs-search-in-2d-grid-java-shortest-path <br>
+     *
      * @param agent
+     * @return the shortest path between agent's source and destination
      */
-    public int BFS(Agent agent) {
+    public List<Box> findPath(Agent agent) {
         // Global variables
         Grid grid = Game.getGrid();
 
@@ -34,7 +52,7 @@ public class SimpleStrategy implements Strategy {
         int colsCount = Game.getGridSize();
 
         // Source and destination
-        Box source = agent.getSource();
+        Box source = agent.getCurrent();
         int sourceRow = source.getX();
         int sourceCol = source.getY();
         Box destination = agent.getDestination();
@@ -66,15 +84,15 @@ public class SimpleStrategy implements Strategy {
         colQ.add(sourceCol);
         visited[sourceRow][sourceCol] = true;
 
-        Box box = new Box(sourceRow, sourceCol); // Starting box
-        parentsMap.put(new Box(sourceRow, sourceCol), null); // Source cell has not parent
+        Box box = source; // Starting box
+        parentsMap.put(source, null); // Source cell has not parent
 
         while (rowQ.size() > 0) {
             int row = rowQ.remove();
             int col = colQ.remove();
-            box = new Box(row, col);
+            box = grid.getBox(row, col);
 
-            if (grid.getBox(row, col).equals(destination)) {
+            if (box.equals(destination)) {
                 reachedEnd = true;
                 break;
             }
@@ -110,7 +128,6 @@ public class SimpleStrategy implements Strategy {
             if (nodesLeftInLayer == 0) {
                 nodesLeftInLayer = nodesInNextLayer;
                 nodesInNextLayer = 0;
-
                 movesCount++;
             }
         }
@@ -122,16 +139,34 @@ public class SimpleStrategy implements Strategy {
             current = parentsMap.get(current);
         }
 
-        // Return path length
+        // Return path
         if (reachedEnd) {
-            System.out.println("=========");
-            System.out.println(path);
-            System.out.println("=========");
+            System.out.println("movesCount=" + movesCount);
 
-            return movesCount;
+            return path;
         }
 
         // If no path found
-        return -1;
+        return Collections.emptyList();
+    }
+
+    public List<Direction> convertPathToDirections(List<Box> path) {
+        List<Direction> directions = new ArrayList<>();
+
+        for (int i = 0; i < path.size() - 1; i++) {
+            if (path.get(i).getX() != path.get(i + 1).getX()) {
+                if (path.get(i).getX() < path.get(i + 1).getX())
+                    directions.add(Direction.SOUTH);
+                else if (path.get(i).getX() > path.get(i + 1).getX())
+                    directions.add(Direction.NORTH);
+            } else if (path.get(i).getY() != path.get(i + 1).getY()) {
+                if (path.get(i).getY() < path.get(i + 1).getY())
+                    directions.add(Direction.EAST);
+                else if (path.get(i).getY() > path.get(i + 1).getY())
+                    directions.add(Direction.WEST);
+            }
+        }
+
+        return directions;
     }
 }

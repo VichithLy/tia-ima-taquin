@@ -3,6 +3,7 @@ package com.tia.views;
 import com.tia.models.Agent;
 
 import com.tia.models.Game;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -58,6 +59,27 @@ public class GridView {
         tile.setStroke(Color.BLACK);
         tile.setFill(Color.WHITE);
         board.add(tile, column, row);
+    }
+
+    /**
+     * @param board
+     * @param row
+     * @param column
+     * @param color
+     */
+    public static void colorTile(GridPane board, int row, int column, Color color) {
+        for (Node node : board.getChildren()) {
+            if (board.getRowIndex(node) == row
+                    && board.getColumnIndex(node) ==  column) {
+                // node.setScaleX(2);
+
+                if (node instanceof Rectangle) {
+                    Rectangle tile = (Rectangle) node;
+                    tile.setFill(color);
+                }
+            }
+        }
+
     }
 
     /**

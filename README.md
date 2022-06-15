@@ -39,6 +39,8 @@ TODO :
   
 - [ ] Taquin avec >1 agents
   - [ ] Algorithme BFS
+    - Choisir de contourner ou non les obstacles
+    - Agent reste sur place tant qu'il n'a pas de chemin libre vers destination
   - [ ] Convertir le chemin BFS en suite de directions
   - [ ] Multithreading
     - [ ] Semaphore pour chaque Box

@@ -1,9 +1,12 @@
 package com.tia.models;
 
+import com.tia.enums.Direction;
 import com.tia.enums.Letter;
 import com.tia.strategies.Context;
 import com.tia.strategies.NaiveStrategy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class Agent implements Runnable {
@@ -11,22 +14,17 @@ public class Agent implements Runnable {
     private Box source;
     private Box destination;
     private Box current;
-    private Context context = new Context(new NaiveStrategy());
+    private List<Direction> pathDirections;
+    private Context context;
 
     private CountDownLatch latch;
-
-    /*public Agent() {
-        this.value = Letter.NULL;
-        this.destination = new Box(-1, -1);
-        this.source = new Box(-1, -1);;
-        this.current = new Box(-1, -1);;
-    }*/
 
     public Agent(Letter value, Box current, Box destination, Context context) {
         this.value = value;
         this.destination = destination;
         this.source = current;
         this.current = current;
+        this.pathDirections = new ArrayList<>();
         this.context = context;
     }
 
@@ -72,6 +70,14 @@ public class Agent implements Runnable {
 
     public void setCurrent(Box current) {
         this.current = current;
+    }
+
+    public List<Direction> getPathDirections() {
+        return pathDirections;
+    }
+
+    public void setPathDirections(List<Direction> pathDirections) {
+        this.pathDirections = pathDirections;
     }
 
     public CountDownLatch getLatch() {

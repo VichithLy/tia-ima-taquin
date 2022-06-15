@@ -2,6 +2,7 @@ package com.tia;
 
 import com.tia.enums.Direction;
 import com.tia.models.Agent;
+import com.tia.models.Box;
 import com.tia.models.Game;
 import com.tia.strategies.CognitiveStrategy;
 import com.tia.strategies.Context;
@@ -13,9 +14,11 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,14 +62,25 @@ public class GameController {
         Agent agent = Game.getAgents().get(0);
 
         SimpleStrategy strategy = new SimpleStrategy();
-        System.out.println("findPath=" + strategy.BFS(agent));
+        System.out.println("=====");
 
-        //
+        List<Box> path = strategy.findPath(agent);
+        System.out.println("path=" + path);
+        System.out.println("directions=" + strategy.convertPathToDirections(path));
+
+
+        for (Box box : path) {
+            int x = box.getX();
+            int y = box.getY();
+
+            GridView.colorTile(board, x, y, Color.AQUAMARINE);
+        }
         // Game.printGrid();
     }
 
     @FXML
     public void down() {
+        exitGame = true;
     }
 
     @FXML
@@ -76,7 +90,6 @@ public class GameController {
     @FXML
     public void right() {
         Agent agent = Game.getAgents().get(0);
-
         NaiveStrategy strategy = new NaiveStrategy();
         strategy.move(agent, Direction.EAST);
 
@@ -89,26 +102,8 @@ public class GameController {
     public void run() {
         if (gameIsInit) {
             exitGame = false;
-
-            Runnable runnable = () -> {
-                while (!Game.isSolved() && !exitGame) {
-                    executeAgentsThreadPool();
-                    runCreateOrUpdateBoardsAndAgentsThread();
-                    sleepMillis(1000);
-                    stepsCount++;
-
-                    printStatus();
-                }
-
-                if (!exitGame) {
-                    System.out.println("Board solved!");
-                    runShowAlertSolvedBoardThread();
-                }
-            };
-            Thread thread = new Thread(runnable);
-            thread.start();
+            solveGame();
         }
-
     }
 
     @FXML
@@ -119,6 +114,26 @@ public class GameController {
     }
 
     // Threads
+
+    public void solveGame() {
+        Runnable runnable = () -> {
+            while (!Game.isSolved() && !exitGame) {
+                executeAgentsThreadPool();
+                runCreateOrUpdateBoardsAndAgentsThread();
+                sleepMillis(1000);
+                stepsCount++;
+
+                // printStatus();
+            }
+
+            if (!exitGame) {
+                System.out.println("Board solved!");
+                runShowAlertSolvedBoardThread();
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
 
     public void sleepMillis(long millis) {
         try {

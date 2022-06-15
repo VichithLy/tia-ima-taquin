@@ -1,6 +1,7 @@
 Notions :
 
-- Thread / Multithreading
+- Thread / Multithreading :
+  - https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
 - Ressource partagée
 - Mutex
 - Sémaphore
@@ -11,9 +12,15 @@ Notions :
   - synchronized vs semaphore : https://itsallbinary.com/java-synchronized-vs-semaphore/
   - https://www.baeldung.com/java-start-two-threads-at-same-time
   - https://www.baeldung.com/java-timer-and-timertask
+- Algorithme de plus court chemin (matrice)
+  - https://www.geeksforgeeks.org/find-whether-path-two-cells-matrix/?ref=lbp
+  - https://www.youtube.com/watch?v=2JNEme00ZFA
+  - https://www.geeksforgeeks.org/check-possible-path-2d-matrix/
+- Synchronized methods
 
 TODO :
 
+<<<<<<< HEAD
 - [ ] Taquin avec 1 agent
   - [ ] Algo de path finding (A\* ou Dijkstra ou Col/Ligne)
   - [ ] Thread
@@ -22,3 +29,49 @@ TODO :
   - [ ] Fin du jeu si agent atteint sa destination
 - [ ] Grille en variable partagée (static)
   - [ ] Current et Destination sont des cases de cette grille (ex : Grid.getBox(x, y))
+=======
+- [x] Taquin avec 1 agent
+  - [x] Algo de path finding (A\* ou Dijkstra ou Col/Ligne ou BFS)
+  - [x] Thread
+  - [x] Mettre à jour la vue à chaque fin d'étape
+  - [x] Fin du jeu si agent atteint sa destination
+  - Grille partagée par tous les agents
+  - [x] Source et Destination agents dans Box de Grid
+  - [x] Mouvements des agents
+
+
+- [ ] GUI
+  - [x] Nombre d'agents
+  - [x] Stratégie
+  - [ ] Temps entre chaque étape
+  
+------
+  
+- [ ] Taquin avec >1 agents
+  - [ ] Algorithme BFS
+    - Choisir de contourner ou non les obstacles
+    - Agent reste sur place tant qu'il n'a pas de chemin libre vers destination
+  - [ ] Convertir le chemin BFS en suite de directions
+  - [ ] Multithreading
+    - [ ] Semaphore pour chaque Box
+    - [ ] Fonctionnement en ronde
+    - [ ] Mise à jour GUI à la fin d'une ronde
+    - [ ] Gestions priorité quand concurrence Box
+  - [ ] Détecter quand tous les agents ont atteint leur destination
+  - [ ] Compteur de rondes
+  
+------
+
+- [ ] Strategy Pattern
+  - [x] Naive
+    - Agent rejoint ligne en premier, puis colonne (possibilité choix aléatoire)
+    - Agent ne peut pas se déplacer sur case qui contient un agent
+    - n=1 OK mais si situations de blocages augments quand n croit
+  - [ ] Simple
+    - Avant de se déplacer, Agent cherche le meilleur chemin vers destination (plus court)
+      - Path finding avec ou sans contournement d'obstacle (autre Agent) ?
+  - [ ] Cognitive
+
+- [ ] Priorités des agents
+   
+>>>>>>> 7b6e14f440e8e842435f6f5e692c632476d3a0cf

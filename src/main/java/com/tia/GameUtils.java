@@ -35,4 +35,12 @@ public class GameUtils {
         return randomElement;
     }
 
+    /**
+     * @param name
+     * @param obj
+     */
+    public static void print(Object name, Object obj) {
+        System.out.println(name + ": " + obj);
+    }
+
 }

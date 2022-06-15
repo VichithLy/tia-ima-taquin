@@ -7,8 +7,7 @@ import com.tia.models.Box;
 import com.tia.models.Game;
 import com.tia.models.Grid;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class SimpleStrategy implements Strategy {
     @Override
@@ -24,7 +23,7 @@ public class SimpleStrategy implements Strategy {
     /**
      * BFS: https://www.youtube.com/watch?v=KiCBXu4P-2Y
      * Queue: https://www.delftstack.com/fr/howto/java/enqueue-and-dequeue-java/
-     *
+     * Reconstruct path: https://stackoverflow.com/questions/61113331/bfs-search-in-2d-grid-java-shortest-path
      * @param agent
      */
     public int BFS(Agent agent) {
@@ -34,68 +33,75 @@ public class SimpleStrategy implements Strategy {
         int rowsCount = Game.getGridSize();
         int colsCount = Game.getGridSize();
 
+        // Source and destination
         Box source = agent.getSource();
         int sourceRow = source.getX();
         int sourceCol = source.getY();
         Box destination = agent.getDestination();
 
+        // Queues
         Queue<Integer> rowQ = new LinkedList<>();
         Queue<Integer> colQ = new LinkedList<>();
 
-        // Variables to track the number of steps taken
+        // Path
+        Map<Box, Box> parentsMap = new HashMap<>();
+        List<Box> path = new ArrayList<>();
+
+        // Tracking
         int movesCount = 0;
         int nodesLeftInLayer = 1;
         int nodesInNextLayer = 0;
 
-        // Variables used to track whether the 'E' character
-        // ever gets reached during the BFS
         boolean reachedEnd = false;
 
-        // Matrix of false values used to track whether
-        // the node at position (i, j) has been visited
+        // Matrix of visited boxes: if Box(i, j) has been visited = true
         boolean[][] visited = new boolean[rowsCount][colsCount];
 
-        // Directions
-        int[] rowDirections = new int[]{-1, +1, 0, 0};
-        int[] colDirections = new int[]{0, 0, +1, -1};
+        // Directions vectors
+        int[] rowDirections = new int[]{-1, 1, 0, 0};
+        int[] colDirections = new int[]{0, 0, 1, -1};
 
-        // ========== Solve
-
+        // Solving
         rowQ.add(sourceRow);
         colQ.add(sourceCol);
         visited[sourceRow][sourceCol] = true;
 
+        Box box = new Box(sourceRow, sourceCol); // Starting box
+        parentsMap.put(new Box(sourceRow, sourceCol), null); // Source cell has not parent
+
         while (rowQ.size() > 0) {
             int row = rowQ.remove();
             int col = colQ.remove();
-
-            /*System.out.println(grid.getBox(row, col) + " - "
-                    + destination + " - "
-                    + grid.getBox(row, col).equals(destination));*/
+            box = new Box(row, col);
 
             if (grid.getBox(row, col).equals(destination)) {
                 reachedEnd = true;
                 break;
             }
 
-            // ========== exploreNeighbours
-
+            // Explore box neighbours
             for (int i = 0; i < 4; i++) {
                 int newRow = row + rowDirections[i];
                 int newCol = col + colDirections[i];
 
-                // Skip out of bounds locations
+                // Neighbours in grid's bounds
                 if (newRow < 0 || newCol < 0) continue;
                 if (newRow >= rowsCount || newCol >= colsCount) continue;
 
-                // Skip visited locations or blocked cells
+                // Skip visited or blocked boxes
                 if (visited[newRow][newCol]) continue;
 
+                // Skip boxes obstacles
                 if (grid.getBox(newRow, newCol).getAgent() != null) continue;
 
+                // Not visited boxes
                 rowQ.add(newRow);
                 colQ.add(newCol);
                 visited[newRow][newCol] = true;
+
+                // To reconstruct the path
+                parentsMap.put(new Box(newRow, newCol), new Box(row, col));
+
                 nodesInNextLayer++;
             }
 
@@ -104,13 +110,28 @@ public class SimpleStrategy implements Strategy {
             if (nodesLeftInLayer == 0) {
                 nodesLeftInLayer = nodesInNextLayer;
                 nodesInNextLayer = 0;
+
                 movesCount++;
             }
         }
 
-        if (reachedEnd) return movesCount;
+        // Path reconstruction
+        Box current = box;
+        while (current != null) {
+            path.add(0, current);
+            current = parentsMap.get(current);
+        }
 
+        // Return path length
+        if (reachedEnd) {
+            System.out.println("=========");
+            System.out.println(path);
+            System.out.println("=========");
+
+            return movesCount;
+        }
+
+        // If no path found
         return -1;
     }
-
 }

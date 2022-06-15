@@ -60,6 +60,9 @@ public class GameController {
 
         SimpleStrategy strategy = new SimpleStrategy();
         System.out.println("findPath=" + strategy.BFS(agent));
+
+        //
+        // Game.printGrid();
     }
 
     @FXML

@@ -31,4 +31,8 @@ public enum Letter {
     public String getText() {
         return text;
     }
+
+    public int getCode() {
+        return code;
+    }
 }

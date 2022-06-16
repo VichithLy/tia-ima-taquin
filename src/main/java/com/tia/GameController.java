@@ -124,7 +124,7 @@ public class GameController {
         runSetStepsCountLabelThread(0);
         exitGame = true;
         gameIsRunning = false;
-        
+
         GridView.resetBoards(board, solvedBoard);
     }
 

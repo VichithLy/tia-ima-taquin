@@ -66,6 +66,7 @@ TODO :
     - Actions
 
 - [ ] Priorités des agents
+
   - Valeur symbole
   - Distance Manhattan
     - https://www.geeksforgeeks.org/calculate-the-manhattan-distance-between-two-cells-of-given-2d-array/

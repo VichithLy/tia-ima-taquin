@@ -101,6 +101,7 @@ public class Agent implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("=====");
         System.out.println("Agent running...");
 
         solve();

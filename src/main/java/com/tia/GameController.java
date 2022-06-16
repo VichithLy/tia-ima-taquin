@@ -1,5 +1,6 @@
 package com.tia;
 
+import com.tia.algorithms.BFS;
 import com.tia.enums.Direction;
 import com.tia.models.Agent;
 import com.tia.models.Box;
@@ -77,9 +78,9 @@ public class GameController {
         SimpleStrategy strategy = new SimpleStrategy();
         System.out.println("=====");
 
-        List<Box> path = strategy.findPath(agent);
+        List<Box> path = BFS.findPathByAvoidingObstacles(agent);
         System.out.println("path=" + path);
-        System.out.println("directions=" + strategy.convertPathToDirections(path));
+        System.out.println("directions=" + BFS.convertPathToDirections(path));
 
         for (Box box : path) {
             int x = box.getX();
@@ -136,7 +137,7 @@ public class GameController {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
-                sleepMillis(1000);
+                sleepMillis(250);
 
                 // printStatus();
             }

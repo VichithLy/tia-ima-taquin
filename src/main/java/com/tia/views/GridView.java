@@ -71,7 +71,6 @@ public class GridView {
         for (Node node : board.getChildren()) {
             if (board.getRowIndex(node) == row
                     && board.getColumnIndex(node) ==  column) {
-                // node.setScaleX(2);
 
                 if (node instanceof Rectangle) {
                     Rectangle tile = (Rectangle) node;

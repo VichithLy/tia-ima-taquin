@@ -36,7 +36,7 @@ public final class Game {
      * @param agentsCount
      */
     private static void initAgents(Grid grid, int agentsCount, Context context) {
-        final int SIZE_GRID = grid.getSize();
+        /*final int SIZE_GRID = grid.getSize();
 
         int[] gridCoords = new int[SIZE_GRID];
         for (int i = 0; i < SIZE_GRID; i++) {
@@ -61,25 +61,25 @@ public final class Game {
             Agent agent = new Agent(Letter.getLetterByCode(i), current, destination, context);
             current.setAgent(agent);
             agents.add(agent);
-        }
+        }*/
 
-        // testAgents();
+        testAgents();
     }
 
     public static void testAgents() {
         Box current = grid.getBox(1, 1); // TO CHANGE
-        Box destination = grid.getBox(1, 4);
+        Box destination = grid.getBox(3, 4);
         Agent agent = new Agent(Letter.getLetterByCode(0), current, destination, context);
 
         current.setAgent(agent);
         agents.add(agent);
 
-        /*Box current2 = grid.getBox(0, 2); // TO CHANGE
-        Box destination2 = grid.getBox(2, 2);
+        Box current2 = grid.getBox(3, 4); // TO CHANGE
+        Box destination2 = grid.getBox(1, 1);
         Agent agent2 = new Agent(Letter.getLetterByCode(1), current2, destination2, context);
 
         current2.setAgent(agent2);
-        agents.add(agent2);*/
+        agents.add(agent2);
     }
 
     /**

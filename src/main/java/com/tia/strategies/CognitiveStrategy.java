@@ -6,7 +6,8 @@ import com.tia.models.Agent;
 public class CognitiveStrategy implements Strategy {
     @Override
     public void move(Agent agent, Direction direction) {
-
+        NaiveStrategy strategy = new NaiveStrategy();
+        strategy.move(agent, direction);
     }
 
     @Override

@@ -34,6 +34,7 @@ TODO :
   - [x] Nombre d'agents
   - [x] Stratégie
   - [ ] Temps entre chaque étape
+  - [ ] Bouton stop
 
 ---
 

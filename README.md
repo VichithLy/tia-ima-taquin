@@ -33,8 +33,8 @@ TODO :
 - [ ] GUI
   - [x] Nombre d'agents
   - [x] Stratégie
-  - [ ] Temps entre chaque étape
-  - [ ] Bouton stop
+  - [x] Temps entre chaque étape
+  - [x] Bouton stop
 
 ---
 

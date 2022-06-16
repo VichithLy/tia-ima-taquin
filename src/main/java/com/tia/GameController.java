@@ -42,9 +42,11 @@ public class GameController {
     @FXML
     GridPane solvedBoard;
     @FXML
-    private ComboBox chosenStrategy;
+    private ComboBox strategyBox;
     @FXML
-    private ComboBox chosenAgentsNumber;
+    private ComboBox agentsNumberBox;
+    @FXML
+    private ComboBox stepDurationBox;
     @FXML
     private Label stepsCountLabel;
 
@@ -54,6 +56,7 @@ public class GameController {
     public void initialize() {
         initStrategiesAndSetDefault();
         initAgentsNumberAndSetDefault();
+        initStepDurationAndSetDefault();
         GridView.drawBoards(board, solvedBoard);
     }
 
@@ -65,7 +68,7 @@ public class GameController {
         gameIsInit = true;
         gameIsRunning = false;
 
-        Game.init(SIZE_BOARD, (int) chosenAgentsNumber.getValue(), returnSelectedStrategyContext());
+        Game.init(SIZE_BOARD, (int) agentsNumberBox.getValue(), returnSelectedStrategyContext());
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
 
         printStatus();
@@ -121,6 +124,14 @@ public class GameController {
     }
 
     @FXML
+    public void stop() {
+        if (gameIsInit && gameIsRunning) {
+            exitGame = true;
+            runShowAlertThread("Game stopped");
+        }
+    }
+
+    @FXML
     public void reset() {
         runSetStepsCountLabelThread(0);
         exitGame = true;
@@ -133,18 +144,16 @@ public class GameController {
 
     public void solveGame() {
         Runnable runnable = () -> {
-            while (!Game.isSolved() && !exitGame) {
+            while (!Game.isSolved() && !exitGame && gameIsInit) {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
-                sleepMillis(250);
-
+                sleepMillis(GameUtils.convertToLong(stepDurationBox.getValue()));
                 // printStatus();
             }
 
             if (!exitGame) {
-                System.out.println("Board solved!");
-                runShowAlertSolvedBoardThread();
+                runShowAlertThread("Board solved successfully!");
             }
         };
         Thread thread = new Thread(runnable);
@@ -159,9 +168,9 @@ public class GameController {
         }
     }
 
-    public void runShowAlertSolvedBoardThread() {
+    public void runShowAlertThread(String text) {
         Platform.runLater(() -> {
-            GridView.showAlertSolvedBoard();
+            GridView.showAlert(text);
         });
     }
 
@@ -201,8 +210,8 @@ public class GameController {
     // Utils
 
     public void initStrategiesAndSetDefault() {
-        chosenStrategy.setItems(FXCollections.observableList(Arrays.asList("Naive", "Simple", "Cognitive")));
-        chosenStrategy.getSelectionModel().selectFirst();
+        strategyBox.setItems(FXCollections.observableList(Arrays.asList("Naive", "Simple", "Cognitive")));
+        strategyBox.getSelectionModel().selectFirst();
     }
 
     public void initAgentsNumberAndSetDefault() {
@@ -210,14 +219,19 @@ public class GameController {
         for (int i = 1; i < SIZE_BOARD * SIZE_BOARD; i++) {
             agentsNumbers.add(i);
         }
-        chosenAgentsNumber.setItems(FXCollections.observableList(agentsNumbers));
-        chosenAgentsNumber.getSelectionModel().selectFirst();
+        agentsNumberBox.setItems(FXCollections.observableList(agentsNumbers));
+        agentsNumberBox.getSelectionModel().selectFirst();
+    }
+
+    public void initStepDurationAndSetDefault() {
+        stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("250", "500", "1000", "2000")));
+        stepDurationBox.getSelectionModel().select(1);
     }
 
     public Context returnSelectedStrategyContext() {
         Context context = new Context(new NaiveStrategy());
 
-        switch ((String) chosenStrategy.getValue()) {
+        switch ((String) strategyBox.getValue()) {
             case "Naive" -> context = new Context(new NaiveStrategy());
             case "Simple" -> context = new Context(new SimpleStrategy());
             case "Cognitive" -> context = new Context(new CognitiveStrategy());
@@ -227,8 +241,8 @@ public class GameController {
     }
 
     public void printParams() {
-        System.out.println("Strategy=" + chosenStrategy.getValue());
-        System.out.println("Number of agents=" + chosenAgentsNumber.getValue());
+        System.out.println("Strategy=" + strategyBox.getValue().toString());
+        System.out.println("Number of agents=" + agentsNumberBox.getValue().toString());
     }
 
     public void printStatus() {

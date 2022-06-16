@@ -43,4 +43,10 @@ public class GameUtils {
         System.out.println(name + ": " + obj);
     }
 
+    public static Long convertToLong(Object o){
+        String stringToConvert = String.valueOf(o);
+        Long convertedLong = Long.parseLong(stringToConvert);
+        return convertedLong;
+    }
+
 }

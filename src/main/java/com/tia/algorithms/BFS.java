@@ -86,7 +86,7 @@ public final class BFS {
 
                 // Skip boxes obstacles and destination
                 if (grid.getBox(newRow, newCol).getAgent() != null &&
-                        !grid.getBox(newRow, newCol).getAgent().equals(destination))
+                        !grid.getBox(newRow, newCol).equals(destination))
                     continue;
 
                 // Not visited boxes

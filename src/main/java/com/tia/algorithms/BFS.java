@@ -19,7 +19,7 @@ public final class BFS {
      * @param agent
      * @return the shortest path between agent's source and destination
      */
-    public static List<Box> findPathByAvoidingObstacles(Agent agent) {
+    public static List<Box> findPathWithObstaclesAvoidance(Agent agent) {
         // Global variables
         Grid grid = Game.getGrid();
 
@@ -128,7 +128,7 @@ public final class BFS {
     }
 
 
-    public static List<Box> findPathWithoutAvoidingObstacles(Agent agent) {
+    public static List<Box> findPathWithoutObstaclesAvoidance(Agent agent) {
         // Global variables
         Grid grid = Game.getGrid();
 

@@ -15,6 +15,7 @@ public class Agent implements Runnable {
     private Box destination;
     private Box current;
     private List<Direction> pathDirections;
+    private int priority;
     private Context context;
 
     private CountDownLatch latch;
@@ -25,17 +26,8 @@ public class Agent implements Runnable {
         this.source = current;
         this.current = current;
         this.pathDirections = new ArrayList<>();
+        this.priority = value.getCode();
         this.context = context;
-    }
-
-    // Methods
-
-    public boolean isArrived() {
-        return (current.equals(destination));
-    }
-
-    public void solve() {
-        context.executeStrategy(this);
     }
 
     // Getters & Setters
@@ -88,7 +80,56 @@ public class Agent implements Runnable {
         this.latch = latch;
     }
 
-    // Functions
+    // Methods
+
+    public boolean isArrived() {
+        return (current.equals(destination));
+    }
+
+    public List<Agent> getNeighbours() {
+        Grid grid = Game.getGrid();
+        List<Agent> neighbours = new ArrayList<>();
+
+        int[] rowDirections = new int[]{-1, 1, 0, 0};
+        int[] colDirections = new int[]{0, 0, 1, -1};
+
+        for (int i = 0; i < 4; i++) {
+            int nextRow = this.current.getX() + rowDirections[i];
+            int nextCol = this.current.getY() + colDirections[i];
+
+            if (nextRow < 0 || nextCol < 0) continue;
+            if (nextRow >= Game.getGridSize() || nextCol >= Game.getGridSize()) continue;
+
+            Agent agent = grid.getBox(nextRow, nextCol).getAgent();
+            if (agent != null) neighbours.add(agent);
+        }
+
+        return neighbours;
+    }
+
+    public Agent getNeighbour(Direction direction) {
+        Grid grid = Game.getGrid();
+        int row = this.getCurrent().getX();
+        int col = this.getCurrent().getY();
+
+        Agent neighbour = null;
+
+        if (direction.equals(Direction.NORTH)) {
+            neighbour = grid.getBox(row - 1, col).getAgent();
+        } else if (direction.equals(Direction.SOUTH)) {
+            neighbour = grid.getBox(row + 1, col).getAgent();
+        } else if (direction.equals(Direction.WEST)) {
+            neighbour = grid.getBox(row, col - 1).getAgent();
+        } else if (direction.equals(Direction.EAST)) {
+            neighbour = grid.getBox(row, col + 1).getAgent();
+        }
+
+        return neighbour;
+    }
+
+    public void solve() {
+        context.executeStrategy(this);
+    }
 
     @Override
     public String toString() {

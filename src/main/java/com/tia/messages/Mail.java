@@ -38,4 +38,15 @@ public class Mail {
     public int getPriority() {
         return priority;
     }
+
+    @Override
+    public String toString() {
+        return "Mail{" +
+                "sender=" + sender +
+                ", receiver=" + receiver +
+                ", subject=" + subject +
+                ", content=" + content +
+                ", priority=" + priority +
+                '}';
+    }
 }

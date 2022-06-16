@@ -67,19 +67,58 @@ public final class Game {
     }
 
     public static void testAgents() {
-        Box current = grid.getBox(1, 1); // TO CHANGE
-        Box destination = grid.getBox(3, 4);
-        Agent agent = new Agent(Letter.getLetterByCode(0), current, destination, context);
+        // CASE 1
+        /*addAgent(0,0,0, 0, 2);
+        addAgent(1,0,1, 0, 1);
+        addAgent(2,1,0, 1, 0);*/
+
+        // CASE 2
+        /*addAgent(0,0,4, 0, 2);
+        addAgent(1,0,3, 0, 3);
+        addAgent(2,1,4, 1, 4);*/
+
+        // CASE 3
+        /*addAgent(0,4,0, 0, 2);
+        addAgent(1,3,0, 3, 0);
+        addAgent(2,4,1, 4, 1);*/
+
+        // CASE 4
+        /*addAgent(0,4,4, 0, 2);
+        addAgent(1,4,3, 4, 3);
+        addAgent(2,3,4, 3, 4);*/
+
+        // CASE 5
+        /*addAgent(0,2,0, 0, 0);
+        addAgent(1,1,0, 1, 0);
+        addAgent(2,2,1, 2, 1);
+        addAgent(3,3,0, 3, 0);*/
+
+        // CASE 6
+        /*addAgent(0,2,4, 0, 0);
+        addAgent(1,2,3, 2, 3);
+        addAgent(2,1,4, 1, 4);
+        addAgent(3,3,4, 3, 4);*/
+
+        // CASE 7
+        /*addAgent(0,0,2, 0, 0);
+        addAgent(1,0,1, 0, 1);
+        addAgent(2,0,3, 0, 3);
+        addAgent(3,1,2, 1, 2);*/
+
+        // CASE 8
+        addAgent(0,4,2, 4, 0);
+        addAgent(1,4,1, 4, 1);
+        addAgent(2,4,3, 4, 3);
+        addAgent(3,3,2, 3, 2);
+    }
+
+    public static void addAgent(int index, int x1, int y1, int x2, int y2) {
+        Box current = grid.getBox(x1, y1); // TO CHANGE
+        Box destination = grid.getBox(x2, y2);
+        Agent agent = new Agent(Letter.getLetterByCode(index), current, destination, context);
 
         current.setAgent(agent);
         agents.add(agent);
-
-        Box current2 = grid.getBox(3, 4); // TO CHANGE
-        Box destination2 = grid.getBox(1, 1);
-        Agent agent2 = new Agent(Letter.getLetterByCode(1), current2, destination2, context);
-
-        current2.setAgent(agent2);
-        agents.add(agent2);
     }
 
     /**

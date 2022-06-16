@@ -2,6 +2,7 @@ package com.tia;
 
 import com.tia.algorithms.BFS;
 import com.tia.enums.Direction;
+import com.tia.messages.MailBox;
 import com.tia.models.Agent;
 import com.tia.models.Box;
 import com.tia.models.Game;
@@ -69,6 +70,8 @@ public class GameController {
         gameIsRunning = false;
 
         Game.init(SIZE_BOARD, (int) agentsNumberBox.getValue(), returnSelectedStrategyContext());
+        MailBox.init(Game.getAgents());
+
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
 
         printStatus();
@@ -76,12 +79,11 @@ public class GameController {
 
     @FXML
     public void up() {
-        Agent agent = Game.getAgents().get(0);
-
-        SimpleStrategy strategy = new SimpleStrategy();
         System.out.println("=====");
 
-        List<Box> path = BFS.findPathByAvoidingObstacles(agent);
+        Agent agent = Game.getAgents().get(0);
+        // List<Box> path = BFS.findPathWithObstaclesAvoidance(agent);
+        List<Box> path = BFS.findPathWithoutObstaclesAvoidance(agent);
         System.out.println("path=" + path);
         System.out.println("directions=" + BFS.convertPathToDirections(path));
 
@@ -144,7 +146,9 @@ public class GameController {
 
     public void solveGame() {
         Runnable runnable = () -> {
-            while (!Game.isSolved() && !exitGame && gameIsInit) {
+            // TO_UNCOMMENT
+            while (!Game.isSolved() && !exitGame) {
+            //for (int i = 0; i < 1; i++) {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
@@ -190,6 +194,8 @@ public class GameController {
      * https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
      */
     public void executeAgentsThreadPool() {
+        // TO_UNCOMMENT
+
         CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
         ExecutorService executor = Executors.newFixedThreadPool(Game.getAgents().size());
 
@@ -198,7 +204,15 @@ public class GameController {
             executor.execute(agent);
         }
 
-        executor.shutdown();
+        // Test with one Agent
+        /*CountDownLatch latch = new CountDownLatch(1);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+
+        Agent agent = Game.getAgent(0);
+        agent.setLatch(latch);
+        executor.execute(agent);
+
+        executor.shutdown();*/
 
         try {
             latch.await();
@@ -211,7 +225,7 @@ public class GameController {
 
     public void initStrategiesAndSetDefault() {
         strategyBox.setItems(FXCollections.observableList(Arrays.asList("Naive", "Simple", "Cognitive")));
-        strategyBox.getSelectionModel().selectFirst();
+        strategyBox.getSelectionModel().select(2);
     }
 
     public void initAgentsNumberAndSetDefault() {

@@ -18,7 +18,7 @@ public class SimpleStrategy implements Strategy {
 
     @Override
     public void solve(Agent agent) {
-        List<Box> path = BFS.findPathByAvoidingObstacles(agent);
+        List<Box> path = BFS.findPathWithObstaclesAvoidance(agent);
         List<Direction> directions = BFS.convertPathToDirections(path);
 
         agent.setPathDirections(directions);

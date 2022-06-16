@@ -43,18 +43,17 @@ TODO :
     - Choisir de contourner ou non les obstacles
     - Agent reste sur place tant qu'il n'a pas de chemin libre vers destination
   - [x] Convertir le chemin BFS en suite de directions
-  - [ ] Multithreading
+  - [x] Multithreading
     - [ ] Semaphore pour chaque Box
-    - [ ] Fonctionnement en ronde
-    - [ ] Mise à jour GUI à la fin d'une ronde
+    - [x] Fonctionnement en ronde
+    - [x] Mise à jour GUI à la fin d'une ronde
     - [ ] Gestions priorité quand concurrence Box
   - [ ] Détecter quand tous les agents ont atteint leur destination
   - [x] Compteur de rondes
 
 ---
 
-- [ ] Strategy Pattern
-
+- [x] Strategy Pattern
   - [x] Naive
     - Agent rejoint ligne en premier, puis colonne (possibilité choix aléatoire)
     - Agent ne peut pas se déplacer sur case qui contient un agent
@@ -64,13 +63,13 @@ TODO :
       - Path finding avec ou sans contournement d'obstacle (autre Agent) ?
   - [ ] Cognitive
     - Mailbox / Mail
+      - Envoyer un Mail à son voisin de plus petite priorité (s'il y en a)
     - Actions
 
 - [ ] Priorités des agents
-
   - Valeur symbole
   - Distance Manhattan
     - https://www.geeksforgeeks.org/calculate-the-manhattan-distance-between-two-cells-of-given-2d-array/
-
+    
 - [ ] Résoudre Taquin
   - Commencer par première ligne puis première colonne

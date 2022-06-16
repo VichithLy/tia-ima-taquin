@@ -10,9 +10,15 @@ import com.tia.strategies.NaiveStrategy;
 import com.tia.strategies.SimpleStrategy;
 import com.tia.views.GridView;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
@@ -27,8 +33,8 @@ import static com.tia.Constants.SIZE_BOARD;
 
 public class GameController {
     Boolean gameIsInit = false;
+    Boolean gameIsRunning = false;
     Boolean exitGame; // https://www.geeksforgeeks.org/killing-threads-in-java/
-    int stepsCount = 0;
 
     @FXML
     GridPane board;
@@ -38,6 +44,10 @@ public class GameController {
     private ComboBox chosenStrategy;
     @FXML
     private ComboBox chosenAgentsNumber;
+    @FXML
+    private Label stepsCountLabel;
+
+    private SimpleIntegerProperty stepsCount = new SimpleIntegerProperty(0);
 
     @FXML
     public void initialize() {
@@ -48,13 +58,16 @@ public class GameController {
 
     @FXML
     public void init() {
-        stepsCount = 0;
+        stepsCountLabel.textProperty().bind(Bindings.convert(stepsCount));
+        runSetStepsCountLabelThread(0);
+        exitGame = true;
         gameIsInit = true;
+        gameIsRunning = false;
 
         Game.init(SIZE_BOARD, (int) chosenAgentsNumber.getValue(), returnSelectedStrategyContext());
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
 
-        // printStatus();
+        printStatus();
     }
 
     @FXML
@@ -67,7 +80,6 @@ public class GameController {
         List<Box> path = strategy.findPath(agent);
         System.out.println("path=" + path);
         System.out.println("directions=" + strategy.convertPathToDirections(path));
-
 
         for (Box box : path) {
             int x = box.getX();
@@ -100,7 +112,8 @@ public class GameController {
 
     @FXML
     public void run() {
-        if (gameIsInit) {
+        if (gameIsInit && !gameIsRunning) {
+            gameIsRunning = true;
             exitGame = false;
             solveGame();
         }
@@ -108,8 +121,10 @@ public class GameController {
 
     @FXML
     public void reset() {
-        stepsCount = 0;
+        runSetStepsCountLabelThread(0);
         exitGame = true;
+        gameIsRunning = false;
+        
         GridView.resetBoards(board, solvedBoard);
     }
 
@@ -118,10 +133,10 @@ public class GameController {
     public void solveGame() {
         Runnable runnable = () -> {
             while (!Game.isSolved() && !exitGame) {
+                runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
                 sleepMillis(1000);
-                stepsCount++;
 
                 // printStatus();
             }
@@ -155,6 +170,12 @@ public class GameController {
         });
     }
 
+    public void runSetStepsCountLabelThread(int value) {
+        Platform.runLater(() -> {
+            stepsCount.setValue(value);
+        });
+    }
+
     /**
      * https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
      */
@@ -171,7 +192,7 @@ public class GameController {
 
         try {
             latch.await();
-        } catch(InterruptedException ex) {
+        } catch (InterruptedException ex) {
             System.out.println(ex);
         }
     }

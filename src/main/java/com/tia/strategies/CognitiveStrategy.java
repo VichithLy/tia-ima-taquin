@@ -2,18 +2,13 @@ package com.tia.strategies;
 
 import com.tia.GameUtils;
 import com.tia.algorithms.BFS;
-import com.tia.enums.Content;
 import com.tia.enums.Direction;
-import com.tia.enums.Subject;
-import com.tia.messages.Mail;
-import com.tia.messages.MailBox;
 import com.tia.models.Agent;
 import com.tia.models.Box;
 import com.tia.models.Game;
 import com.tia.models.Grid;
 
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class CognitiveStrategy implements Strategy {
     @Override
@@ -22,13 +17,13 @@ public class CognitiveStrategy implements Strategy {
         strategy.move(agent, direction);
 
         // If direction D
-            // If in bounds
-                // If no other Agent
-                    // Move
-                // Else
-                    // Send message to this Agent
-            // Else
-                // Don't move
+        // If in bounds
+        // If no other Agent
+        // Move
+        // Else
+        // Send message to this Agent
+        // Else
+        // Don't move
 
         /*Box current = agent.getCurrent();
         Grid grid = Game.getGrid();
@@ -101,13 +96,13 @@ public class CognitiveStrategy implements Strategy {
         int col = agent.getCurrent().getY();
 
         if (direction.equals(Direction.NORTH)) {
-            if ((row - 1) < 0) return false;
+            return (row - 1) >= 0;
         } else if (direction.equals(Direction.SOUTH)) {
-            if ((row + 1) < 0) return false;
+            return (row + 1) >= 0;
         } else if (direction.equals(Direction.WEST)) {
-            if ((col - 1) < 0) return false;
+            return (col - 1) >= 0;
         } else if (direction.equals(Direction.EAST)) {
-            if ((col + 1) < 0) return false;
+            return (col + 1) >= 0;
         }
 
         return true;
@@ -120,13 +115,13 @@ public class CognitiveStrategy implements Strategy {
         int col = agent.getCurrent().getY();
 
         if (direction.equals(Direction.NORTH)) {
-            if (grid.getBox(row - 1, col).getAgent() != null) return false;
+            return grid.getBox(row - 1, col).getAgent() == null;
         } else if (direction.equals(Direction.SOUTH)) {
-            if (grid.getBox(row + 1, col).getAgent() != null) return false;
+            return grid.getBox(row + 1, col).getAgent() == null;
         } else if (direction.equals(Direction.WEST)) {
-            if (grid.getBox(row, col - 1).getAgent() != null) return false;
+            return grid.getBox(row, col - 1).getAgent() == null;
         } else if (direction.equals(Direction.EAST)) {
-            if (grid.getBox(row, col + 1).getAgent() != null) return false;
+            return grid.getBox(row, col + 1).getAgent() == null;
         }
 
         return true;
@@ -141,67 +136,23 @@ public class CognitiveStrategy implements Strategy {
 
         boolean result = false;
 
-        /*System.out.println(row);
-        System.out.println(col);*/
-
-        if (row == 0 && col == 0) { // isInTopLeftCorner
-            boolean hasEastSouthNeighbours = (grid.getBox(row, col + 1).getAgent() != null
-                    && grid.getBox(row + 1, col).getAgent() != null);
-
-            if (hasEastSouthNeighbours) result = true;
-
-        } else if (row == 0 && col == gridMaxIndex) { // isInTopRightCorner
-            boolean hasWestSouthNeighbours = (grid.getBox(row, col - 1).getAgent() != null
-                    && grid.getBox(row + 1, col).getAgent() != null);
-
-            if (hasWestSouthNeighbours) result = true;
-
-        } else if (row == gridMaxIndex && col == 0) { // isInBottomLeftCorner
-            boolean hasEastNorthNeighbours = (grid.getBox(row, col + 1).getAgent() != null
-                    && grid.getBox(row - 1, col).getAgent() != null);
-
-            if (hasEastNorthNeighbours) result = true;
-
-        } else if (row == gridMaxIndex && col == gridMaxIndex) { // isInBottomRightCorner
-            boolean hasWestNorthNeighbours = (grid.getBox(row, col - 1).getAgent() != null
-                    && grid.getBox(row - 1, col).getAgent() != null);
-
-            if (hasWestNorthNeighbours) result = true;
-        } else if (row == 0) { // isInTopBorder
-            boolean hasEastWestSouthNeighbours = (
-                grid.getBox(row, col + 1).getAgent() != null
-                && grid.getBox(row, col - 1).getAgent() != null
-                && grid.getBox(row + 1, col).getAgent() != null
-            );
-
-            if (hasEastWestSouthNeighbours) result = true;
-
-        } else if (row == gridMaxIndex) { // isInBottomBorder
-            boolean hasEastWestNorthNeighbours = (
-                grid.getBox(row, col + 1).getAgent() != null
-                && grid.getBox(row, col - 1).getAgent() != null
-                && grid.getBox(row - 1, col).getAgent() != null
-            );
-
-            if (hasEastWestNorthNeighbours) result = true;
-
-        } else if (col == 0) { // isInLeftBorder
-            boolean hasEastNorthSouthNeighbours = (
-                grid.getBox(row, col + 1).getAgent() != null
-                && grid.getBox(row - 1, col).getAgent() != null
-                && grid.getBox(row + 1, col).getAgent() != null
-            );
-
-            if (hasEastNorthSouthNeighbours) result = true;
-
-        } else if (col == gridMaxIndex) { // isInRightBorder
-            boolean hasWestNorthSouthNeighbours = (
-                grid.getBox(row, col - 1).getAgent() != null
-                && grid.getBox(row - 1, col).getAgent() != null
-                && grid.getBox(row + 1, col).getAgent() != null
-            );
-
-            if (hasWestNorthSouthNeighbours) result = true;
+        if ((row > 0 && col > 0) && (row < gridMaxIndex && col < gridMaxIndex)) { // isInsideBoard
+            if (agent.getNeighbours().size() == 4) result = true;
+        } else if (
+            (row == 0 && col == 0) // isInTopRightCorner
+            || (row == 0 && col == gridMaxIndex) // isInBottomLeftCorner
+            || (row == gridMaxIndex && col == 0) // isInTopBorder
+            || (row == gridMaxIndex && col == gridMaxIndex) // isInBottomRightCorner
+        ) {
+            System.out.println(agent.getNeighbours().size());
+            if (agent.getNeighbours().size() == 2) result = true;
+        }  else if (
+            (row == 0) //isInTopBorder
+            || (row == gridMaxIndex) // isInBottomBorder
+            || (col == 0) // isInLeftBorder
+            || (col == gridMaxIndex) // isInRightBorder
+        ) {
+            if (agent.getNeighbours().size() == 3) result = true;
         }
 
         return result;
@@ -225,9 +176,9 @@ public class CognitiveStrategy implements Strategy {
         }
 */
         // If agent is stuck (all neighbours are other agents)
-            // BFS without obstacle avoidance
+        // BFS without obstacle avoidance
         // Else
-            // BFS with obstacle avoidance
+        // BFS with obstacle avoidance
 
         // TO_CONTINUE
 

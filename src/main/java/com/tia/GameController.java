@@ -147,8 +147,8 @@ public class GameController {
     public void solveGame() {
         Runnable runnable = () -> {
             // TO_UNCOMMENT
-            while (!Game.isSolved() && !exitGame) {
-            //for (int i = 0; i < 1; i++) {
+            // while (!Game.isSolved() && !exitGame) {
+            for (int i = 0; i < 1; i++) {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
@@ -196,23 +196,23 @@ public class GameController {
     public void executeAgentsThreadPool() {
         // TO_UNCOMMENT
 
-        CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
+        /*CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
         ExecutorService executor = Executors.newFixedThreadPool(Game.getAgents().size());
 
         for (Agent agent : Game.getAgents()) {
             agent.setLatch(latch);
             executor.execute(agent);
-        }
+        }*/
 
         // Test with one Agent
-        /*CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(1);
         ExecutorService executor = Executors.newFixedThreadPool(1);
 
         Agent agent = Game.getAgent(0);
         agent.setLatch(latch);
         executor.execute(agent);
 
-        executor.shutdown();*/
+        executor.shutdown();
 
         try {
             latch.await();

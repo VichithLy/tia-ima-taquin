@@ -1,5 +1,5 @@
 package com.tia.enums;
 
 public enum Content {
-    MOVE
+    MOVE, OK, NOK
 }

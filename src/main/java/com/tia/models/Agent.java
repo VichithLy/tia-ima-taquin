@@ -1,12 +1,14 @@
 package com.tia.models;
 
+import com.tia.algorithms.BFS;
 import com.tia.enums.Direction;
 import com.tia.enums.Letter;
 import com.tia.strategies.Context;
-import com.tia.strategies.NaiveStrategy;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class Agent implements Runnable {
@@ -16,6 +18,7 @@ public class Agent implements Runnable {
     private Box current;
     private List<Direction> pathDirections;
     private int priority;
+    private boolean isArrived;
     private boolean hasSendAMessage;
     private Context context;
 
@@ -28,6 +31,7 @@ public class Agent implements Runnable {
         this.current = current;
         this.pathDirections = new ArrayList<>();
         this.priority = value.getCode();
+        this.isArrived = isArrived();
         this.hasSendAMessage = false;
         this.context = context;
     }
@@ -74,8 +78,16 @@ public class Agent implements Runnable {
         this.pathDirections = pathDirections;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
     public boolean hasSendAMessage() {
         return this.hasSendAMessage;
+    }
+
+    public void canSendAnotherMessage() {
+        this.hasSendAMessage = false;
     }
 
     public void sentAMessage() {
@@ -141,6 +153,56 @@ public class Agent implements Runnable {
         return neighbour;
     }
 
+    public Agent getMinPriorityNeighbourAgentExceptOne(Agent one) {
+        List<Agent> neighbours = getNeighbours();
+
+        if (neighbours.contains(one))
+            neighbours.remove(one);
+
+        Agent agent = neighbours.stream()
+                .min(Comparator.comparingInt(Agent::getPriority))
+                .get();
+
+        return agent;
+    }
+
+    /**
+     * @return
+     */
+    public List<Box> getFreeNeighboursBox() {
+        Grid grid = Game.getGrid();
+        List<Box> neighbours = new ArrayList<>();
+
+        int[] rowDirections = new int[]{-1, 1, 0, 0};
+        int[] colDirections = new int[]{0, 0, 1, -1};
+
+        for (int i = 0; i < 4; i++) {
+            int nextRow = this.current.getX() + rowDirections[i];
+            int nextCol = this.current.getY() + colDirections[i];
+
+            if (nextRow < 0 || nextCol < 0) continue;
+            if (nextRow >= Game.getGridSize() || nextCol >= Game.getGridSize()) continue;
+
+            Agent agent = grid.getBox(nextRow, nextCol).getAgent();
+            if (agent == null)
+                neighbours.add(grid.getBox(nextRow, nextCol));
+        }
+
+        return neighbours;
+    }
+
+    public Direction getRandomDirection() {
+        List<Box> boxes = getFreeNeighboursBox();
+        Random rand = new Random();
+        Box randBox = boxes.get(rand.nextInt(boxes.size()));
+
+        List<Box> boxesToDirection = new ArrayList<>();
+        boxesToDirection.add(current);
+        boxesToDirection.add(randBox);
+
+        return BFS.convertPathToDirections(boxesToDirection).get(0);
+    }
+
     public boolean isStuck() {
         Grid grid = Game.getGrid();
         int gridMaxIndex = grid.getSize() - 1;
@@ -160,7 +222,7 @@ public class Agent implements Runnable {
         ) {
             System.out.println(getNeighbours().size());
             if (getNeighbours().size() == 2) result = true;
-        }  else if (
+        } else if (
                 (row == 0) //isInTopBorder
                         || (row == gridMaxIndex) // isInBottomBorder
                         || (col == 0) // isInLeftBorder

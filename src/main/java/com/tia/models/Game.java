@@ -112,11 +112,15 @@ public final class Game {
         addAgent(3,3,2, 3, 2);*/
 
         // CASE 9
-        addAgent(0,2,2, 4, 0);
+        addAgent(0,2,2, 3, 4);
         addAgent(1,2,3, 2, 3);
         addAgent(2,2,1, 2, 1);
         addAgent(3,1,2, 1, 2);
         addAgent(4,3,2, 3, 2);
+
+        addAgent(5,3,1, 3, 1);
+        addAgent(6,3,3, 3, 3);
+        addAgent(7,4,2, 4, 2);
 
     }
 

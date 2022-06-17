@@ -76,8 +76,6 @@ public class GameController {
 
     @FXML
     public void up() {
-        System.out.println("=====");
-
         Agent agent = Game.getAgents().get(0);
         List<Box> path = BFS.findPath(agent, false);
         System.out.println("path=" + path);
@@ -150,8 +148,7 @@ public class GameController {
                 runCreateOrUpdateBoardsAndAgentsThread();
                 sleepMillis(GameUtils.convertToLong(stepDurationBox.getValue()));
                 // printStatus();
-                System.out.println("=====\n");
-                Game.printGrid();
+//                Game.printGrid();
             }
 
             // TO_UNCOMMENT
@@ -238,7 +235,7 @@ public class GameController {
 
     public void initStepDurationAndSetDefault() {
         stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("250", "500", "1000", "2000")));
-        stepDurationBox.getSelectionModel().select(1);
+        stepDurationBox.getSelectionModel().select(2);
     }
 
     public Context returnSelectedStrategyContext() {

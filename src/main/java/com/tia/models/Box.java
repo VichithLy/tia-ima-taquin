@@ -40,7 +40,7 @@ public class Box {
      * @return true or false
      */
     @Override
-    public boolean equals(Object o) {
+    public synchronized boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Box box = (Box) o;
@@ -48,12 +48,12 @@ public class Box {
     }
 
     @Override
-    public int hashCode() {
+    public synchronized int hashCode() {
         return Objects.hash(x, y);
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return "(" + x + "," + y + ")";
     }
 }

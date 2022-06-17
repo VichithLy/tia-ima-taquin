@@ -19,15 +19,15 @@ public class Grid {
 
     // Getters & Setters
 
-    public Box getBox(int x, int y)  {
+    public synchronized Box getBox(int x, int y)  {
         return boxes[x][y];
     }
 
-    public Box[][] getBoxes() {
+    public synchronized Box[][] getBoxes() {
         return boxes;
     }
 
-    public int getSize() {
+    public synchronized int getSize() {
         return size;
     }
 }

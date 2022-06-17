@@ -1,5 +1,6 @@
 package com.tia.strategies;
 
+import com.tia.GameUtils;
 import com.tia.algorithms.BFS;
 import com.tia.enums.Direction;
 import com.tia.models.Agent;
@@ -18,14 +19,12 @@ public class SimpleStrategy implements Strategy {
 
     @Override
     public void solve(Agent agent) {
-        List<Box> path = BFS.findPathWithObstaclesAvoidance(agent);
+        List<Box> path = BFS.findPath(agent, true);
         List<Direction> directions = BFS.convertPathToDirections(path);
 
         agent.setPathDirections(directions);
-        // System.out.println(agent.getPathDirections());
 
         if (directions.size() != 0) {
-            // System.out.println(directions.get(0));
             move(agent, directions.get(0));
         }
     }

@@ -116,7 +116,7 @@ public final class Game {
         addAgent(1,2,3, 2, 3);
         addAgent(2,2,1, 2, 1);
         addAgent(3,1,2, 1, 2);
-        addAgent(3,3,2, 3, 2);
+        addAgent(4,3,2, 3, 2);
 
     }
 

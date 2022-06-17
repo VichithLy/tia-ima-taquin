@@ -16,6 +16,7 @@ public class Agent implements Runnable {
     private Box current;
     private List<Direction> pathDirections;
     private int priority;
+    private boolean hasSendAMessage;
     private Context context;
 
     private CountDownLatch latch;
@@ -27,6 +28,7 @@ public class Agent implements Runnable {
         this.current = current;
         this.pathDirections = new ArrayList<>();
         this.priority = value.getCode();
+        this.hasSendAMessage = false;
         this.context = context;
     }
 
@@ -72,6 +74,14 @@ public class Agent implements Runnable {
         this.pathDirections = pathDirections;
     }
 
+    public boolean hasSendAMessage() {
+        return this.hasSendAMessage;
+    }
+
+    public void sentAMessage() {
+        this.hasSendAMessage = true;
+    }
+
     public CountDownLatch getLatch() {
         return latch;
     }
@@ -107,6 +117,10 @@ public class Agent implements Runnable {
         return neighbours;
     }
 
+    /**
+     * @param direction
+     * @return Neighbour in the box the agent wants to go
+     */
     public Agent getNeighbour(Direction direction) {
         Grid grid = Game.getGrid();
         int row = this.getCurrent().getX();
@@ -127,6 +141,37 @@ public class Agent implements Runnable {
         return neighbour;
     }
 
+    public boolean isStuck() {
+        Grid grid = Game.getGrid();
+        int gridMaxIndex = grid.getSize() - 1;
+
+        int row = getCurrent().getX();
+        int col = getCurrent().getY();
+
+        boolean result = false;
+
+        if ((row > 0 && col > 0) && (row < gridMaxIndex && col < gridMaxIndex)) { // isInsideBoard
+            if (getNeighbours().size() == 4) result = true;
+        } else if (
+                (row == 0 && col == 0) // isInTopRightCorner
+                        || (row == 0 && col == gridMaxIndex) // isInBottomLeftCorner
+                        || (row == gridMaxIndex && col == 0) // isInTopBorder
+                        || (row == gridMaxIndex && col == gridMaxIndex) // isInBottomRightCorner
+        ) {
+            System.out.println(getNeighbours().size());
+            if (getNeighbours().size() == 2) result = true;
+        }  else if (
+                (row == 0) //isInTopBorder
+                        || (row == gridMaxIndex) // isInBottomBorder
+                        || (col == 0) // isInLeftBorder
+                        || (col == gridMaxIndex) // isInRightBorder
+        ) {
+            if (getNeighbours().size() == 3) result = true;
+        }
+
+        return result;
+    }
+
     public void solve() {
         context.executeStrategy(this);
     }
@@ -142,11 +187,7 @@ public class Agent implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("=====");
-        System.out.println("Agent running...");
-
         solve();
-
         this.latch.countDown();
     }
 }

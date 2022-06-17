@@ -42,11 +42,11 @@ public class Mail {
     @Override
     public String toString() {
         return "Mail{" +
-                "sender=" + sender +
-                ", receiver=" + receiver +
-                ", subject=" + subject +
-                ", content=" + content +
-                ", priority=" + priority +
+                "sender=" + sender + "\n" +
+                ", receiver=" + receiver + "\n" +
+                ", subject=" + subject + "\n" +
+                ", content=" + content + "\n" +
+                ", priority=" + priority + "\n" +
                 '}';
     }
 }

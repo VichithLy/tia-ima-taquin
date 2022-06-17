@@ -8,7 +8,6 @@ import com.tia.models.Grid;
 
 import java.util.*;
 
-
 public final class BFS {
     /**
      * BFS path finding algorithm <br>
@@ -19,7 +18,7 @@ public final class BFS {
      * @param agent
      * @return the shortest path between agent's source and destination
      */
-    public static List<Box> findPathWithObstaclesAvoidance(Agent agent) {
+    public static List<Box> findPath(Agent agent, boolean obstaclesAvoidance) {
         // Global variables
         Grid grid = Game.getGrid();
 
@@ -85,9 +84,11 @@ public final class BFS {
                 if (visited[newRow][newCol]) continue;
 
                 // Skip boxes obstacles and destination
-                if (grid.getBox(newRow, newCol).getAgent() != null &&
-                        !grid.getBox(newRow, newCol).equals(destination))
-                    continue;
+                if (obstaclesAvoidance) {
+                    if (grid.getBox(newRow, newCol).getAgent() != null &&
+                            !grid.getBox(newRow, newCol).equals(destination))
+                        continue;
+                }
 
                 // Not visited boxes
                 rowQ.add(newRow);
@@ -118,112 +119,6 @@ public final class BFS {
 
         // Return path
         if (reachedEnd) {
-            System.out.println("movesCount=" + movesCount);
-
-            return path;
-        }
-
-        // If no path found
-        return Collections.emptyList();
-    }
-
-
-    public static List<Box> findPathWithoutObstaclesAvoidance(Agent agent) {
-        // Global variables
-        Grid grid = Game.getGrid();
-
-        int rowsCount = Game.getGridSize();
-        int colsCount = Game.getGridSize();
-
-        // Source and destination
-        Box source = agent.getCurrent();
-        int sourceRow = source.getX();
-        int sourceCol = source.getY();
-        Box destination = agent.getDestination();
-
-        // Queues
-        Queue<Integer> rowQ = new LinkedList<>();
-        Queue<Integer> colQ = new LinkedList<>();
-
-        // Path
-        Map<Box, Box> parentsMap = new HashMap<>();
-        List<Box> path = new ArrayList<>();
-
-        // Tracking
-        int movesCount = 0;
-        int nodesLeftInLayer = 1;
-        int nodesInNextLayer = 0;
-
-        boolean reachedEnd = false;
-
-        // Matrix of visited boxes: if Box(i, j) has been visited = true
-        boolean[][] visited = new boolean[rowsCount][colsCount];
-
-        // Directions vectors
-        int[] rowDirections = new int[]{-1, 1, 0, 0};
-        int[] colDirections = new int[]{0, 0, 1, -1};
-
-        // Solving
-        rowQ.add(sourceRow);
-        colQ.add(sourceCol);
-        visited[sourceRow][sourceCol] = true;
-
-        Box box = source; // Starting box
-        parentsMap.put(source, null); // Source cell has not parent
-
-        while (rowQ.size() > 0) {
-            int row = rowQ.remove();
-            int col = colQ.remove();
-            box = grid.getBox(row, col);
-
-            if (box.equals(destination)) {
-                reachedEnd = true;
-                break;
-            }
-
-            // Explore box neighbours
-            for (int i = 0; i < 4; i++) {
-                int newRow = row + rowDirections[i];
-                int newCol = col + colDirections[i];
-
-                // Neighbours in grid's bounds
-                if (newRow < 0 || newCol < 0) continue;
-                if (newRow >= rowsCount || newCol >= colsCount) continue;
-
-                // Skip visited or blocked boxes
-                if (visited[newRow][newCol]) continue;
-
-                // Not visited boxes
-                rowQ.add(newRow);
-                colQ.add(newCol);
-                visited[newRow][newCol] = true;
-
-                // To reconstruct the path
-                parentsMap.put(new Box(newRow, newCol), new Box(row, col));
-
-                nodesInNextLayer++;
-            }
-
-            nodesLeftInLayer--;
-
-            if (nodesLeftInLayer == 0) {
-                nodesLeftInLayer = nodesInNextLayer;
-                nodesInNextLayer = 0;
-                movesCount++;
-            }
-        }
-
-        // Path reconstruction
-        Box current = box;
-        while (current != null) {
-            path.add(0, current);
-            current = parentsMap.get(current);
-        }
-
-        // Return path
-        if (reachedEnd) {
-            System.out.println("movesCount=" + movesCount);
-
             return path;
         }
 

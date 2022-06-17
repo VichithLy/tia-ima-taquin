@@ -13,10 +13,7 @@ import com.tia.strategies.SimpleStrategy;
 import com.tia.views.GridView;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -74,7 +71,7 @@ public class GameController {
 
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
 
-        printStatus();
+        // printStatus();
     }
 
     @FXML
@@ -82,8 +79,7 @@ public class GameController {
         System.out.println("=====");
 
         Agent agent = Game.getAgents().get(0);
-        // List<Box> path = BFS.findPathWithObstaclesAvoidance(agent);
-        List<Box> path = BFS.findPathWithoutObstaclesAvoidance(agent);
+        List<Box> path = BFS.findPath(agent, false);
         System.out.println("path=" + path);
         System.out.println("directions=" + BFS.convertPathToDirections(path));
 
@@ -113,7 +109,7 @@ public class GameController {
 
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
 
-        printStatus();
+        // printStatus();
     }
 
     @FXML
@@ -147,15 +143,18 @@ public class GameController {
     public void solveGame() {
         Runnable runnable = () -> {
             // TO_UNCOMMENT
-            // while (!Game.isSolved() && !exitGame) {
-            for (int i = 0; i < 1; i++) {
+            while (!Game.isSolved() && !exitGame) {
+//            for (int i = 0; i < 1; i++) {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
                 sleepMillis(GameUtils.convertToLong(stepDurationBox.getValue()));
                 // printStatus();
+                System.out.println("=====\n");
+                Game.printGrid();
             }
 
+            // TO_UNCOMMENT
             if (!exitGame) {
                 runShowAlertThread("Board solved successfully!");
             }
@@ -196,23 +195,23 @@ public class GameController {
     public void executeAgentsThreadPool() {
         // TO_UNCOMMENT
 
-        /*CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
+        CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
         ExecutorService executor = Executors.newFixedThreadPool(Game.getAgents().size());
 
         for (Agent agent : Game.getAgents()) {
             agent.setLatch(latch);
             executor.execute(agent);
-        }*/
+        }
 
         // Test with one Agent
-        CountDownLatch latch = new CountDownLatch(1);
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-
-        Agent agent = Game.getAgent(0);
-        agent.setLatch(latch);
-        executor.execute(agent);
-
-        executor.shutdown();
+//        CountDownLatch latch = new CountDownLatch(1);
+//        ExecutorService executor = Executors.newFixedThreadPool(1);
+//
+//        Agent agent = Game.getAgent(0);
+//        agent.setLatch(latch);
+//        executor.execute(agent);
+//
+//        executor.shutdown();
 
         try {
             latch.await();
@@ -261,7 +260,7 @@ public class GameController {
 
     public void printStatus() {
         System.out.println("=================");
-        System.out.println("Step number=" + stepsCount);
+        System.out.println("Step number=" + stepsCountLabel.getText());
         printParams();
         Game.printAgents();
         Game.printGrid();

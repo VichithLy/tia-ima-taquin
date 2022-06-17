@@ -18,8 +18,6 @@ public class Agent implements Runnable {
     private Box current;
     private List<Direction> pathDirections;
     private int priority;
-    private boolean isArrived;
-    private boolean hasSendAMessage;
     private Context context;
 
     private CountDownLatch latch;
@@ -31,8 +29,6 @@ public class Agent implements Runnable {
         this.current = current;
         this.pathDirections = new ArrayList<>();
         this.priority = value.getCode();
-        this.isArrived = isArrived();
-        this.hasSendAMessage = false;
         this.context = context;
     }
 
@@ -80,18 +76,6 @@ public class Agent implements Runnable {
 
     public int getPriority() {
         return priority;
-    }
-
-    public boolean hasSendAMessage() {
-        return this.hasSendAMessage;
-    }
-
-    public void canSendAnotherMessage() {
-        this.hasSendAMessage = false;
-    }
-
-    public void sentAMessage() {
-        this.hasSendAMessage = true;
     }
 
     public CountDownLatch getLatch() {
@@ -220,7 +204,6 @@ public class Agent implements Runnable {
                         || (row == gridMaxIndex && col == 0) // isInTopBorder
                         || (row == gridMaxIndex && col == gridMaxIndex) // isInBottomRightCorner
         ) {
-            System.out.println(getNeighbours().size());
             if (getNeighbours().size() == 2) result = true;
         } else if (
                 (row == 0) //isInTopBorder

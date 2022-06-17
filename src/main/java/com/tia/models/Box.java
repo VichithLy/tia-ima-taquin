@@ -15,19 +15,19 @@ public class Box {
 
     // Getters & Setters
 
-    public synchronized Agent getAgent() {
+    public Agent getAgent() {
         return agent;
     }
 
-    public synchronized void setAgent(Agent agent) {
+    public void setAgent(Agent agent) {
         this.agent = agent;
     }
 
-    public synchronized int getX() {
+    public int getX() {
         return x;
     }
 
-    public synchronized int getY() {
+    public int getY() {
         return y;
     }
 
@@ -40,7 +40,7 @@ public class Box {
      * @return true or false
      */
     @Override
-    public synchronized boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Box box = (Box) o;
@@ -48,12 +48,12 @@ public class Box {
     }
 
     @Override
-    public synchronized int hashCode() {
+    public int hashCode() {
         return Objects.hash(x, y);
     }
 
     @Override
-    public synchronized String toString() {
+    public String toString() {
         return "(" + x + "," + y + ")";
     }
 }

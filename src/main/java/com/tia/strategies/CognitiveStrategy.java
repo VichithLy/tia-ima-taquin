@@ -3,18 +3,17 @@ package com.tia.strategies;
 import com.tia.algorithms.BFS;
 import com.tia.enums.Content;
 import com.tia.enums.Direction;
-import com.tia.enums.Subject;
+import com.tia.enums.Type;
 import com.tia.messages.Mail;
 import com.tia.messages.MailBox;
 import com.tia.models.Agent;
 import com.tia.models.Box;
 
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class CognitiveStrategy implements Strategy {
     @Override
-    public synchronized void move(Agent agent, Direction direction) {
+    public void move(Agent agent, Direction direction) {
         NaiveStrategy strategy = new NaiveStrategy();
         strategy.move(agent, direction);
     }
@@ -24,9 +23,9 @@ public class CognitiveStrategy implements Strategy {
         move(agent, randDirection);
     }
 
-    private synchronized void processMails(Agent agent) {
-        Mail request = MailBox.getPriorityMail(agent, Subject.REQUEST);
-        Mail response = MailBox.getPriorityMail(agent, Subject.RESPONSE);
+    private void processMails(Agent agent) {
+        Mail request = MailBox.getPriorityMail(agent, Type.REQUEST);
+        Mail response = MailBox.getPriorityMail(agent, Type.RESPONSE);
 
         // L'agent traite d'abord ses réponses
         if (response != null) {
@@ -35,16 +34,6 @@ public class CognitiveStrategy implements Strategy {
 
             System.out.println(agent.getValue().getText() + " received a response from "
                     + sender.getValue().getText());
-
-            // Si c'est une réponse positive
-            if (content.equals(Content.OK)) {
-
-            }
-
-            // Si c'est une réponse négative
-            if (content.equals(Content.NOK)) {
-
-            }
         }
 
         // Ensuite ses requêtes
@@ -62,6 +51,8 @@ public class CognitiveStrategy implements Strategy {
                 if (!agent.isStuck()) {
                     // Il se déplace vers une case libre aléatoire
                     moveToRandomDirection(agent);
+
+//                    MailBox.deleteMail(request, agent);
 
                     // TO FIX
                     // Once Mail is processed, delete it
@@ -97,7 +88,7 @@ public class CognitiveStrategy implements Strategy {
         return directions.get(0);
     }
     private void sendRequestMove(Agent sender, Agent receiver) {
-        Mail mail = new Mail(sender, receiver, Subject.REQUEST, Content.MOVE);
+        Mail mail = new Mail(sender, receiver, Type.REQUEST, Content.MOVE);
         MailBox.sendMailTo(mail, receiver);
 
 //        sender.sentAMessage();
@@ -106,7 +97,7 @@ public class CognitiveStrategy implements Strategy {
                 + receiver.getValue().getText());
     }
 
-    private synchronized void goToDestination(Agent agent) {
+    private void goToDestination(Agent agent) {
         // Si l'agent n'a aucune issue (4 autres agents bloquent le passage)
         if (noExit(agent)) {
             // Si la case vers laquelle il veut aller est libre
@@ -133,19 +124,15 @@ public class CognitiveStrategy implements Strategy {
             // BFS with obstacle avoidance
             SimpleStrategy strategy = new SimpleStrategy();
             strategy.solve(agent);
-
         }
     }
 
     @Override
-    public synchronized void solve(Agent agent) {
+    public void solve(Agent agent) {
         // Si l'agent a reçu un mail
-        if (agent.getValue().getText() == "E") {
-            System.out.println(MailBox.getMails(agent, Subject.REQUEST));
-        }
 
-        if (!MailBox.isEmpty(agent, Subject.REQUEST)
-                || !MailBox.isEmpty(agent, Subject.RESPONSE))  {
+        if (!MailBox.isEmpty(agent, Type.REQUEST)
+                || !MailBox.isEmpty(agent, Type.RESPONSE))  {
             processMails(agent);
 
         }

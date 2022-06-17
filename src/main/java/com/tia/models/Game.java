@@ -168,6 +168,7 @@ public final class Game {
      * Print grid's status
      */
     public static void printGrid() {
+        System.out.println("\n==========\n");
         for (Box[] boxes : grid.getBoxes()) {
             for (Box box : boxes) {
                 // System.out.print(box + " ");
@@ -182,6 +183,7 @@ public final class Game {
             }
             System.out.println();
         }
+        System.out.println("\n==========\n");
     }
 
     // Getters & Setters

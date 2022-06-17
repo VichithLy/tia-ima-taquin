@@ -54,7 +54,7 @@ public class GridView {
      * @param column
      * @param row
      */
-    private static void addTileToBoard(GridPane board, int column, int row) {
+    private  static void addTileToBoard(GridPane board, int column, int row) {
         Rectangle tile = new Rectangle(WIDTH_TILE, WIDTH_TILE);
         tile.setStroke(Color.BLACK);
         tile.setFill(Color.WHITE);

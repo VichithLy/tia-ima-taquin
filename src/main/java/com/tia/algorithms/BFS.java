@@ -130,7 +130,7 @@ public final class BFS {
      * @param path
      * @return list of directions
      */
-    public static List<Direction> convertPathToDirections(List<Box> path) {
+    public  static List<Direction> convertPathToDirections(List<Box> path) {
         List<Direction> directions = new ArrayList<>();
 
         for (int i = 0; i < path.size() - 1; i++) {

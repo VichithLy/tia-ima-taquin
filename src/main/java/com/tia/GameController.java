@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,9 +32,9 @@ import java.util.concurrent.Executors;
 import static com.tia.Constants.SIZE_BOARD;
 
 public class GameController {
-    Boolean gameIsInit = false;
-    Boolean gameIsRunning = false;
-    Boolean exitGame; // https://www.geeksforgeeks.org/killing-threads-in-java/
+    static Boolean gameIsInit = false;
+    static Boolean gameIsRunning = false;
+    static Boolean exitGame; // https://www.geeksforgeeks.org/killing-threads-in-java/
 
     @FXML
     GridPane board;
@@ -122,6 +123,7 @@ public class GameController {
     @FXML
     public void stop() {
         if (gameIsInit && gameIsRunning) {
+            gameIsInit = false;
             exitGame = true;
             runShowAlertThread("Game stopped");
         }
@@ -132,6 +134,7 @@ public class GameController {
         runSetStepsCountLabelThread(0);
         exitGame = true;
         gameIsRunning = false;
+        gameIsInit = false;
 
         GridView.resetBoards(board, solvedBoard);
     }
@@ -148,7 +151,7 @@ public class GameController {
                 runCreateOrUpdateBoardsAndAgentsThread();
                 sleepMillis(GameUtils.convertToLong(stepDurationBox.getValue()));
                 // printStatus();
-//                Game.printGrid();
+                Game.printGrid();
             }
 
             // TO_UNCOMMENT

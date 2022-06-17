@@ -19,89 +19,114 @@ public class CognitiveStrategy implements Strategy {
         strategy.move(agent, direction);
     }
 
-    private synchronized void processMails(Agent agent) {
-//        System.out.println("-----> Agent is processing its mails");
-
-        PriorityQueue<Mail> mailBox = MailBox.getAgentMails(agent);
-//        GameUtils.print("mailBox", mailBox);
-
-        Mail mail = MailBox.getAgentPriorityMail(agent);
-//        GameUtils.print("mailToProcess", mailToProcess);
-
-//        System.out.println("-----> Agent is performing the mail's content");
-        Content content = mail.getContent();
-        Agent sender = mail.getSender();
-
-        System.out.println(agent.getValue().getText() + " received a mail of "
-                + sender.getValue().getText());
-
-        if (content.equals(Content.MOVE)) {
-//            System.out.println("-----> Agent is moving");
-//            move(agent, Direction.EAST);
-
-            // If not stuck
-            if (!agent.isStuck()) {
-                // Go to free random box
-                Direction randDirection = agent.getRandomDirection();
-                move(agent, randDirection);
-
-                if (agent.getValue().getText() == "G")
-                    System.out.println("randDirection= " + randDirection);
-
-                // TO FIX
-                // Once Mail is processed, delete it
-                MailBox.deleteAgentMail(mail, agent);
-            } else {
-                if (!agent.hasSendAMessage()) {
-                    // Send message to min priority Agent
-                    Agent neighbour = agent.getMinPriorityNeighbourAgentExceptOne(sender);
-                    sendAMailWithMoveContentToNeighbour(agent, neighbour);
-                }
-            }
-        } else if (content.equals(Content.OK)) {
-
-
-
-        } else if (content.equals(Content.NOK)) {
-
-        }
-
-        // TODO notify mail has been processed
+    private void moveToRandomDirection(Agent agent) {
+        Direction randDirection = agent.getRandomDirection();
+        move(agent, randDirection);
     }
 
-    public void sendAMailWithMoveContentToNeighbour(Agent sender, Agent receiver) {
-        // Send message to min priority Agent
+    private synchronized void processMails(Agent agent) {
+        Mail request = MailBox.getPriorityMail(agent, Subject.REQUEST);
+        Mail response = MailBox.getPriorityMail(agent, Subject.RESPONSE);
+
+        // L'agent traite d'abord ses réponses
+        if (response != null) {
+            Content content = response.getContent();
+            Agent sender = response.getSender();
+
+            System.out.println(agent.getValue().getText() + " received a response from "
+                    + sender.getValue().getText());
+
+            // Si c'est une réponse positive
+            if (content.equals(Content.OK)) {
+
+            }
+
+            // Si c'est une réponse négative
+            if (content.equals(Content.NOK)) {
+
+            }
+        }
+
+        // Ensuite ses requêtes
+        if (request != null) {
+            Content content = request.getContent();
+            Agent sender = request.getSender();
+
+            System.out.println(agent.getValue().getText() + " received a request from "
+                    + sender.getValue().getText());
+
+            // Si on lui demande de bouger
+            if (content.equals(Content.MOVE)) {
+
+                // S'il n'est pas bloqué par d'autres agents
+                if (!agent.isStuck()) {
+                    // Il se déplace vers une case libre aléatoire
+                    moveToRandomDirection(agent);
+
+                    // TO FIX
+                    // Once Mail is processed, delete it
+                    // MailBox.deleteAgentMail(mail, agent);
+                }
+                // S'il est bloqué
+                else {
+                    // Envoie requête "MOVE" à l'agent de plus petite priorité
+                    // (il ne peut pas l'envoyé à l'expéditeur de la requête initiale)
+                    Agent neighbour = agent.getMinPriorityNeighbourAgentExceptOne(sender);
+                    sendRequestMove(agent, neighbour);
+
+//                    if (!agent.hasSendAMessage()) {
+//                        // Send message to min priority Agent
+//                        A
+//                        sendAMailWithMoveContentToNeighbour(agent, neighbour);
+//                    }
+                }
+            }
+
+        }
+    }
+
+    private boolean noExit(Agent agent) {
+        List<Box> path = BFS.findPath(agent, true);
+        return path.isEmpty();
+    }
+    private Direction getNextDirection(Agent agent) {
+        // Calcule le plus court chemin sans obstacle
+        List<Box> path = BFS.findPath(agent, false);
+        List<Direction> directions = BFS.convertPathToDirections(path);
+        agent.setPathDirections(directions);
+        return directions.get(0);
+    }
+    private void sendRequestMove(Agent sender, Agent receiver) {
         Mail mail = new Mail(sender, receiver, Subject.REQUEST, Content.MOVE);
         MailBox.sendMailTo(mail, receiver);
-        sender.sentAMessage();
 
-        System.out.println(sender.getValue().getText() + " sent a mail to "
+//        sender.sentAMessage();
+
+        System.out.println(sender.getValue().getText() + " sent a request to "
                 + receiver.getValue().getText());
     }
 
-    private synchronized void reachDestination(Agent agent) {
-        // If no path found
-        List<Box> pathWithoutObstacles = BFS.findPath(agent, true);
+    private synchronized void goToDestination(Agent agent) {
+        // Si l'agent n'a aucune issue (4 autres agents bloquent le passage)
+        if (noExit(agent)) {
+            // Si la case vers laquelle il veut aller est libre
+            Direction nextDirection = getNextDirection(agent);
+            if (agent.getNeighbour(nextDirection) == null) {
+                // Se déplace vers cette case
+                move(agent, nextDirection);
+                // agent.canSendAnotherMessage();
+            }
+            // Si cette case n'est pas libre
+            else {
+                // On récupère l'agent bloqueur
+                Agent neighbour = agent.getNeighbour(nextDirection);
 
-        if (pathWithoutObstacles.isEmpty()) {
-            // BFS without obstacle avoidance
-            List<Box> path = BFS.findPath(agent, false);
-            List<Direction> directions = BFS.convertPathToDirections(path);
-            agent.setPathDirections(directions);
+                // L'agent qui veut se déplacer lui envoie requête "MOVE"
+                sendRequestMove(agent, neighbour);
 
-            Direction direction = directions.get(0);
-
-            // If the next box is empty
-            if (agent.getNeighbour(direction) == null) {
-                move(agent, directions.get(0));
-                agent.canSendAnotherMessage();
-            } else {
-                // Get the blocker
-                Agent neighbour = agent.getNeighbour(direction);
-                // Send Mail to the blocker
-                if (!agent.hasSendAMessage()) {
-                    sendAMailWithMoveContentToNeighbour(agent, neighbour);
-                }
+//                if (!agent.hasSendAMessage()) {
+//                    sendAMailWithMoveContentToNeighbour(agent, neighbour);
+//                }
             }
 
         } else {
@@ -114,15 +139,23 @@ public class CognitiveStrategy implements Strategy {
 
     @Override
     public synchronized void solve(Agent agent) {
-//        System.out.println("Agent " + agent.getValue().getText() + " is running...");
-//        System.out.println(agent);
+        // Si l'agent a reçu un mail
+        if (agent.getValue().getText() == "E") {
+            System.out.println(MailBox.getMails(agent, Subject.REQUEST));
+        }
 
-//        System.out.println(agent.getFreeNeighboursBox());
-
-        if (!MailBox.getAgentMails(agent).isEmpty()) {
+        if (!MailBox.isEmpty(agent, Subject.REQUEST)
+                || !MailBox.isEmpty(agent, Subject.RESPONSE))  {
             processMails(agent);
-        } else {
-            if (!agent.isArrived()) reachDestination(agent);
+
+        }
+        // S'il n'a rien reçu
+        else {
+            // S'il n'est pas encore arrivé à destination
+            if (!agent.isArrived()) {
+                // Il va vers sa destination
+                goToDestination(agent);
+            }
 //            if (agent.getValue().getText() == "A")
 //                System.out.println("Go to destination: " + agent.getValue().getText());
         }

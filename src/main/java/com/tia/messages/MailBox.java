@@ -1,5 +1,6 @@
 package com.tia.messages;
 
+import com.tia.enums.Subject;
 import com.tia.models.Agent;
 
 import java.util.HashMap;
@@ -12,14 +13,18 @@ import java.util.PriorityQueue;
  * Comparator: https://www.geeksforgeeks.org/implement-priorityqueue-comparator-java/
  */
 public final class MailBox {
-    public static Map<Agent, PriorityQueue> mails = new HashMap<>();
+    public static Map<Agent, Map<Subject, PriorityQueue<Mail>>> mails = new HashMap<>();
 
     /**
      * @param agents
      */
     public static void init(List<Agent> agents) {
         for (Agent agent : agents) {
-            mails.put(agent, new PriorityQueue<>(new MailComparator()));
+            Map<Subject, PriorityQueue<Mail>> subjects = new HashMap<>();
+            subjects.put(Subject.REQUEST, new PriorityQueue<>(new MailComparator()));
+            subjects.put(Subject.RESPONSE, new PriorityQueue<>(new MailComparator()));
+
+            mails.put(agent, subjects);
         }
     }
 
@@ -27,32 +32,37 @@ public final class MailBox {
      * @param agent
      * @return
      */
-    public static PriorityQueue<Mail> getAgentMails(Agent agent) {
-        return mails.get(agent);
+    public static PriorityQueue<Mail> getMails(Agent agent, Subject subject) {
+        return mails.get(agent).get(subject);
     }
 
     /**
      * @param agent
      * @return
      */
-    public static Mail getAndDeleteAgentPriorityMail(Agent agent) {
-        return (Mail) mails.get(agent).poll();
+    public static Mail getAndDeletePriorityMail(Agent agent, Subject subject) {
+        return mails.get(agent).get(subject).poll();
     }
+
 
     /**
      * @param agent
      * @return
      */
-    public static Mail getAgentPriorityMail(Agent agent) {
-        return (Mail) mails.get(agent).peek();
+    public static Mail getPriorityMail(Agent agent, Subject subject) {
+        return mails.get(agent).get(subject).peek();
     }
 
     /**
      * @param mail
      * @param agent
      */
-    public static void deleteAgentMail(Mail mail, Agent agent) {
-        mails.get(agent).remove(mail);
+    public static void deleteMail(Mail mail, Agent agent) {
+        if (mail.equals(Subject.RESPONSE))
+            mails.get(agent).get(Subject.RESPONSE).remove(mail);
+
+        if (mail.equals(Subject.REQUEST))
+            mails.get(agent).get(Subject.REQUEST).remove(mail);
     }
 
     /**
@@ -60,15 +70,18 @@ public final class MailBox {
      * @param agent
      */
     public static void sendMailTo(Mail mail, Agent agent) {
-        mails.get(agent).add(mail);
-    }
+        if (mail.getSubject().equals(Subject.RESPONSE))
+            mails.get(agent).get(Subject.RESPONSE).add(mail);
 
+        if (mail.getSubject().equals(Subject.REQUEST))
+            mails.get(agent).get(Subject.REQUEST).add(mail);
+    }
 
     /**
      * @param agent
      * @return
      */
-    public boolean agentMailBoxIsEmpty(Agent agent) {
-        return mails.get(agent).isEmpty();
+    public static boolean isEmpty(Agent agent, Subject subject) {
+        return mails.get(agent).get(subject).isEmpty();
     }
 }

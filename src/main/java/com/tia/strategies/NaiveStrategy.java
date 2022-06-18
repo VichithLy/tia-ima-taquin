@@ -26,50 +26,41 @@ public class NaiveStrategy implements Strategy {
         switch (direction) {
             case NORTH:
                 if (canMove(agent, Direction.NORTH)) {
-                    // New current
                     Box newBox = grid.getBox(current.getX() - 1, current.getY());
                     newBox.setAgent(current.getAgent());
                     agent.setCurrent(newBox);
-                    // Old current
                     oldBox.setAgent(null);
                 }
                 break;
 
             case SOUTH:
                 if (canMove(agent, Direction.SOUTH)) {
-                    // New current
                     Box newBox = grid.getBox(current.getX() + 1, current.getY());
                     newBox.setAgent(current.getAgent());
                     agent.setCurrent(newBox);
-                    // Old current
                     oldBox.setAgent(null);
                 }
                 break;
 
             case WEST:
                 if (canMove(agent, Direction.WEST)) {
-                    // New current
                     Box newBox = grid.getBox(current.getX(), current.getY() - 1);
                     newBox.setAgent(current.getAgent());
                     agent.setCurrent(newBox);
-                    // Old current
                     oldBox.setAgent(null);
                 }
                 break;
 
             case EAST:
                 if (canMove(agent, Direction.EAST)) {
-                    // New current
                     Box newBox = grid.getBox(current.getX(), current.getY() + 1);
                     newBox.setAgent(current.getAgent());
                     agent.setCurrent(newBox);
-                    // Old current
                     oldBox.setAgent(null);
                 }
                 break;
         }
     }
-
 
     private boolean canMove(Agent agent, Direction direction) {
         Box current = agent.getCurrent();

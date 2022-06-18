@@ -113,9 +113,11 @@ public class GridView {
         final int PADDING = 20;
 
         Rectangle agentTile = new Rectangle(WIDTH_TILE - PADDING , WIDTH_TILE - PADDING);
-        agentTile.setFill(Color.LIGHTGRAY);
+        agentTile.setFill(Color.LIGHTPINK);
         agentTile.setStrokeWidth(1);
         agentTile.setStroke(Color.BLACK);
+
+        if (agent.isArrived()) agentTile.setFill(Color.LIGHTGREEN);
 
         Text text = new Text(agent.getValue().getText());
         text.setFont(Font.font(60));

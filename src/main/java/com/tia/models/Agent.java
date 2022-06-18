@@ -5,10 +5,7 @@ import com.tia.enums.Direction;
 import com.tia.enums.Letter;
 import com.tia.strategies.Context;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 public class Agent implements Runnable {
@@ -62,7 +59,7 @@ public class Agent implements Runnable {
         return current;
     }
 
-    public void setCurrent(Box current) {
+    public synchronized void setCurrent(Box current) {
         this.current = current;
     }
 
@@ -113,6 +110,16 @@ public class Agent implements Runnable {
         return neighbours;
     }
 
+    public Agent getRandomNeighbour() {
+        List<Agent> neighbours = getNeighbours();
+        if (!neighbours.isEmpty()) {
+            Random rand = new Random();
+            return neighbours.get(rand.nextInt(neighbours.size()));
+        }
+
+        return null;
+    }
+
     /**
      * @param direction
      * @return Neighbour in the box the agent wants to go
@@ -143,11 +150,15 @@ public class Agent implements Runnable {
         if (neighbours.contains(one))
             neighbours.remove(one);
 
-        Agent agent = neighbours.stream()
-                .min(Comparator.comparingInt(Agent::getPriority))
-                .get();
+        try {
+            Agent agent = neighbours.stream()
+                    .min(Comparator.comparingInt(Agent::getPriority))
+                    .get();
 
-        return agent;
+            return agent;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -177,14 +188,19 @@ public class Agent implements Runnable {
 
     public Direction getRandomDirection() {
         List<Box> boxes = getFreeNeighboursBox();
-        Random rand = new Random();
-        Box randBox = boxes.get(rand.nextInt(boxes.size()));
 
-        List<Box> boxesToDirection = new ArrayList<>();
-        boxesToDirection.add(current);
-        boxesToDirection.add(randBox);
+        if (!boxes.isEmpty()) {
+            Random rand = new Random();
+            Box randBox = boxes.get(rand.nextInt(boxes.size()));
 
-        return BFS.convertPathToDirections(boxesToDirection).get(0);
+            List<Box> boxesToDirection = new ArrayList<>();
+            boxesToDirection.add(current);
+            boxesToDirection.add(randBox);
+
+            return BFS.convertPathToDirections(boxesToDirection).get(0);
+        }
+
+        return null;
     }
 
     public boolean isStuck() {
@@ -217,7 +233,7 @@ public class Agent implements Runnable {
         return result;
     }
 
-    public void solve() {
+    public synchronized void solve() {
         context.executeStrategy(this);
     }
 

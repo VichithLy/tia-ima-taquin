@@ -19,7 +19,7 @@ public class Box {
         return agent;
     }
 
-    public void setAgent(Agent agent) {
+    public synchronized void  setAgent(Agent agent) {
         this.agent = agent;
     }
 

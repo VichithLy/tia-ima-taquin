@@ -61,11 +61,12 @@ public class GameController {
 
     @FXML
     public void init() {
-        stepsCountLabel.textProperty().bind(Bindings.convert(stepsCount));
-        runSetStepsCountLabelThread(0);
         exitGame = true;
         gameIsInit = true;
         gameIsRunning = false;
+
+        stepsCountLabel.textProperty().bind(Bindings.convert(stepsCount));
+        runSetStepsCountLabelThread(0);
 
         Game.init(SIZE_BOARD, (int) agentsNumberBox.getValue(), returnSelectedStrategyContext());
         MailBox.init(Game.getAgents());
@@ -144,20 +145,20 @@ public class GameController {
     public void solveGame() {
         Runnable runnable = () -> {
             // TO_UNCOMMENT
-            while (!Game.isSolved() && !exitGame) {
+            while (!Game.isSolved() && exitGame == false) {
 //            for (int i = 0; i < 1; i++) {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
                 sleepMillis(GameUtils.convertToLong(stepDurationBox.getValue()));
                 // printStatus();
-                Game.printGrid();
+//                Game.printGrid();
             }
 
             // TO_UNCOMMENT
-            if (!exitGame) {
-                runShowAlertThread("Board solved successfully!");
-            }
+//            if (exitGame == false) {
+//                runShowAlertThread("Board solved successfully!");
+//            }
         };
         Thread thread = new Thread(runnable);
         thread.start();
@@ -177,13 +178,13 @@ public class GameController {
         });
     }
 
-    public void runCreateOrUpdateBoardsAndAgentsThread() {
+    public synchronized void runCreateOrUpdateBoardsAndAgentsThread() {
         Platform.runLater(() -> {
             GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
         });
     }
 
-    public void runSetStepsCountLabelThread(int value) {
+    public synchronized void runSetStepsCountLabelThread(int value) {
         Platform.runLater(() -> {
             stepsCount.setValue(value);
         });
@@ -192,7 +193,7 @@ public class GameController {
     /**
      * https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
      */
-    public void executeAgentsThreadPool() {
+    public synchronized void executeAgentsThreadPool() {
         // TO_UNCOMMENT
 
         CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
@@ -237,8 +238,8 @@ public class GameController {
     }
 
     public void initStepDurationAndSetDefault() {
-        stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("250", "500", "1000", "2000")));
-        stepDurationBox.getSelectionModel().select(2);
+        stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("50", "250", "500", "1000", "2000")));
+        stepDurationBox.getSelectionModel().select(0);
     }
 
     public Context returnSelectedStrategyContext() {

@@ -15,7 +15,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -80,8 +79,13 @@ public class GameController {
     public void up() {
         Agent agent = Game.getAgents().get(0);
         List<Box> path = BFS.findPath(agent, false);
-        System.out.println("path=" + path);
-        System.out.println("directions=" + BFS.convertPathToDirections(path));
+
+//        List<Box> obstaclesToAvoid = new ArrayList<>();
+//        obstaclesToAvoid.add(new Box(0, 1));
+//
+//        List<Box> path = BFS.findPath(agent, obstaclesToAvoid);
+//        System.out.println("path=" + path);
+//        System.out.println("directions=" + BFS.convertPathToDirections(path));
 
         for (Box box : path) {
             int x = box.getX();
@@ -238,7 +242,7 @@ public class GameController {
     }
 
     public void initStepDurationAndSetDefault() {
-        stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("50", "250", "500", "1000", "2000")));
+        stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("10", "50", "250", "500", "1000", "2000")));
         stepDurationBox.getSelectionModel().select(0);
     }
 

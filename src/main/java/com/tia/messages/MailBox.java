@@ -67,13 +67,13 @@ public final class MailBox {
      * @param agent
      */
     public static void deleteMail(Mail mail, Agent agent) {
-        if (mail.getType().equals(Type.RESPONSE))
+        if (!isEmpty(agent, Type.RESPONSE) &&mail.getType().equals(Type.RESPONSE))
             mails.get(agent).get(Type.RESPONSE).remove(mail);
 
-        if (mail.getType().equals(Type.REQUEST))
+        if (!isEmpty(agent, Type.REQUEST) && mail.getType().equals(Type.REQUEST))
             mails.get(agent).get(Type.REQUEST).remove(mail);
 
-        if (mail.getType().equals(Type.SENT))
+        if (!isEmpty(agent, Type.SENT) && mail.getType().equals(Type.SENT))
             sent.get(agent).remove(mail);
     }
 
@@ -82,12 +82,12 @@ public final class MailBox {
      * @param type
      */
     public static void deletePriorityMail(Agent agent, Type type) {
-        if (type.equals(Type.SENT)) sent.get(agent).poll();
+        if (!isEmpty(agent, Type.SENT) && type.equals(Type.SENT)) sent.get(agent).poll();
 
-        if (type.equals(Type.RESPONSE))
+        if (!isEmpty(agent, Type.RESPONSE) && type.equals(Type.RESPONSE))
             mails.get(agent).get(Type.RESPONSE).poll();
 
-        if (type.equals(Type.REQUEST))
+        if (!isEmpty(agent, Type.REQUEST) && type.equals(Type.REQUEST))
             mails.get(agent).get(Type.REQUEST).poll();
     }
 

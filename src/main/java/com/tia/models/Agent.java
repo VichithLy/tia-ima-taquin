@@ -121,6 +121,22 @@ public class Agent implements Runnable {
     }
 
     /**
+     *
+     * @param agent
+     * @return
+     */
+    public Agent getRandomNeighbourExceptOne(Agent agent) {
+        List<Agent> neighbours = getNeighbours();
+        if (!neighbours.isEmpty()) {
+            Random rand = new Random();
+            neighbours.remove(agent);
+            return neighbours.get(rand.nextInt(neighbours.size()));
+        }
+
+        return null;
+    }
+
+    /**
      * @param direction
      * @return Neighbour in the box the agent wants to go
      */
@@ -161,10 +177,29 @@ public class Agent implements Runnable {
         }
     }
 
+    public List<Box> getBoxNeighbours() {
+        Grid grid = Game.getGrid();
+        List<Box> neighbours = new ArrayList<>();
+
+        int[] rowDirections = new int[]{-1, 1, 0, 0};
+        int[] colDirections = new int[]{0, 0, 1, -1};
+
+        for (int i = 0; i < 4; i++) {
+            int nextRow = this.current.getX() + rowDirections[i];
+            int nextCol = this.current.getY() + colDirections[i];
+
+            if (nextRow < 0 || nextCol < 0) continue;
+            if (nextRow >= Game.getGridSize() || nextCol >= Game.getGridSize()) continue;
+
+            neighbours.add(grid.getBox(nextRow, nextCol));
+        }
+        return neighbours;
+    }
+
     /**
      * @return
      */
-    public List<Box> getFreeNeighboursBox() {
+    public List<Box> getFreeBoxNeighbours() {
         Grid grid = Game.getGrid();
         List<Box> neighbours = new ArrayList<>();
 
@@ -187,7 +222,7 @@ public class Agent implements Runnable {
     }
 
     public Direction getRandomDirection() {
-        List<Box> boxes = getFreeNeighboursBox();
+        List<Box> boxes = getFreeBoxNeighbours();
 
         if (!boxes.isEmpty()) {
             Random rand = new Random();

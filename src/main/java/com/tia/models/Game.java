@@ -15,6 +15,7 @@ public final class Game {
 
     /**
      * Constructor of Game
+     *
      * @param gridSize
      * @param agentsCount
      * @param context
@@ -32,38 +33,39 @@ public final class Game {
 
     /**
      * Initialize grid with agents
+     *
      * @param grid
      * @param agentsCount
      */
     private static void initAgents(Grid grid, int agentsCount, Context context) {
-//        final int SIZE_GRID = grid.getSize();
-//
-//        int[] gridCoords = new int[SIZE_GRID];
-//        for (int i = 0; i < SIZE_GRID; i++) {
-//            gridCoords[i] = i;
-//        }
-//
-//        List<int[]> currentPairs = GameUtils.getAllPossiblePairs(gridCoords);
-//        List<int[]> destinationPairs = GameUtils.getAllPossiblePairs(gridCoords);
-//
-//        for (int i = 0; i < agentsCount; i++) {
-//            // agent's current position
-//            int[] randomCurrentPair = GameUtils.getRandomItemFromList(currentPairs);
-//            Box current = grid.getBox(randomCurrentPair[0], randomCurrentPair[1]);
-//            currentPairs.remove(randomCurrentPair);
-//
-//            // agent's destination position
-//            int[] randomDestinationPair = GameUtils.getRandomItemFromList(destinationPairs);
-//            Box destination = grid.getBox(randomDestinationPair[0], randomDestinationPair[1]);
-//            destinationPairs.remove(randomDestinationPair);
-//
-//            // create agent with current and destination positions in grid
-//            Agent agent = new Agent(Letter.getLetterByCode(i), current, destination, context);
-//            current.setAgent(agent);
-//            agents.add(agent);
-//        }
+        final int SIZE_GRID = grid.getSize();
 
-        testAgents();
+        int[] gridCoords = new int[SIZE_GRID];
+        for (int i = 0; i < SIZE_GRID; i++) {
+            gridCoords[i] = i;
+        }
+
+        List<int[]> currentPairs = GameUtils.getAllPossiblePairs(gridCoords);
+        List<int[]> destinationPairs = GameUtils.getAllPossiblePairs(gridCoords);
+
+        for (int i = 0; i < agentsCount; i++) {
+            // agent's current position
+            int[] randomCurrentPair = GameUtils.getRandomItemFromList(currentPairs);
+            Box current = grid.getBox(randomCurrentPair[0], randomCurrentPair[1]);
+            currentPairs.remove(randomCurrentPair);
+
+            // agent's destination position
+            int[] randomDestinationPair = GameUtils.getRandomItemFromList(destinationPairs);
+            Box destination = grid.getBox(randomDestinationPair[0], randomDestinationPair[1]);
+            destinationPairs.remove(randomDestinationPair);
+
+            // create agent with current and destination positions in grid
+            Agent agent = new Agent(Letter.getLetterByCode(i), current, destination, context);
+            current.setAgent(agent);
+            agents.add(agent);
+        }
+
+//        testAgents();
     }
 
     public static void testAgents() {
@@ -133,11 +135,12 @@ public final class Game {
 //        addAgent(3,4,2, 4, 2);
 //        addAgent(4,2,3, 2, 3);
 
-        addAgent(0,3,4, 3, 3);
-        addAgent(1,3,3, 3, 4);
-        addAgent(2,4,3, 4, 4);
-        addAgent(3,2,4, 2, 4);
+//        addAgent(0,3,4, 3, 3);
+//        addAgent(1,3,3, 3, 4);
+//        addAgent(2,4,3, 4, 4);
+//        addAgent(3,2,4, 2, 4);
 
+        addAgent(0, 0, 0, 0, 4);
     }
 
     public static void addAgent(int index, int x1, int y1, int x2, int y2) {
@@ -150,7 +153,6 @@ public final class Game {
     }
 
     /**
-     *
      * @param index
      * @return
      */

@@ -31,11 +31,9 @@ public class CognitiveStrategy implements Strategy {
 //            MailBox.deleteMail(request, agent);
         } else {
 //            Agent neighbour = agent.getMinPriorityNeighbourAgentExceptOne(sender);
-            Agent neighbour = agent.getRandomNeighbourExceptOne(sender);
 //            Agent neighbour = sender;
-
-//            if (MailBox.isEmpty(agent, Type.SENT))
-//                Agent neighbour = agent.getRandomNeighbour();
+//            Agent neighbour = agent.getRandomNeighbour();
+            Agent neighbour = agent.getRandomNeighbourExceptOne(sender);
 
             if (neighbour != null) {
                 sendRequestMove(agent, neighbour);
@@ -64,9 +62,6 @@ public class CognitiveStrategy implements Strategy {
         if (!agent.isArrived()) {
             goToDestination(agent);
         } else {
-//            moveToRandomDirection(agent);
-//            sendResponseOK(agent, sender);
-
             moveToBoxOutsideSenderPath(agent, sender);
         }
     }
@@ -97,25 +92,10 @@ public class CognitiveStrategy implements Strategy {
         if (noExit(agent)) {
             moveOrAskToMove(agent);
         } else if (isBlockedByOtherAgent(agent)) {
-            // TODO
-
-//            moveOrAskToMove(agent);
-
-//            Agent minPriorityAgent = agent.getMinPriorityNeighbourAgentExceptOne(neighbour);
-//            if (minPriorityAgent != null)
-//                sendRequestMove(agent, minPriorityAgent);
-
-            if (neighbour.getValue().getCode() < agent.getValue().getCode()) {
+            if (neighbour.getPriority() < agent.getPriority()) {
                 sendRequestMove(agent, neighbour);
             }
-
-            // L'agent qui veut se déplacer lui envoie requête "MOVE"
-//            sendRequestMove(agent, neighbour);
-
-//            sendRequestMove(agent, randomNeighbour);
-        }
-        // Si la voie est libre, il parcourt le plus court chemin vers sa destination
-        else {
+        } else {
             SimpleStrategy strategy = new SimpleStrategy();
             strategy.solve(agent);
         }
@@ -155,11 +135,9 @@ public class CognitiveStrategy implements Strategy {
     private void sendRequestMove(Agent sender, Agent receiver) {
         Mail mail = new Mail(sender, receiver, Type.REQUEST, Content.MOVE);
 
-//        if (MailBox.getMails(receiver, Type.REQUEST).size() == 0) {
-            MailBox.sendMailTo(mail, receiver);
-            // Ajouter le message dans la queue de mails envoyés
-            MailBox.addSent(sender, mail);
-//        }
+        MailBox.sendMailTo(mail, receiver);
+        // Ajouter le message dans la queue de mails envoyés
+        MailBox.addSent(sender, mail);
     }
 
     private boolean isBlockedByOtherAgent(Agent agent) {
@@ -179,17 +157,12 @@ public class CognitiveStrategy implements Strategy {
         Agent neighbour = agent.getNeighbour(nextDirection);
 
         if (neighbour == null) {
-            // Se déplace vers cette case
             move(agent, nextDirection);
-        }
-        // Si cette case n'est pas libre
-        else {
+        } else {
             // On récupère l'agent bloqueur
             // L'agent qui veut se déplacer lui envoie requête "MOVE"
 //            if (MailBox.isEmpty(agent, Type.SENT))
             sendRequestMove(agent, neighbour);
-
-//            checkPathsIntersection(agent, neighbour);
         }
     }
 
@@ -205,23 +178,10 @@ public class CognitiveStrategy implements Strategy {
     }
 
     private Direction getNextDirection(Agent agent) {
-        // Calcule le plus court chemin sans obstacle
         List<Box> path = BFS.findPath(agent, false);
         List<Direction> directions = BFS.convertPathToDirections(path);
         agent.setPathDirections(directions);
         return directions.get(0);
-    }
-
-    public void checkPathsIntersection(Agent a1, Agent a2) {
-        List<Box> path1 = BFS.findPath(a1, true);
-        List<Box> path2 = BFS.findPath(a2, true);
-
-
-        List<Box> common1 = new ArrayList<Box>(path1);
-        List<Box> common2 = new ArrayList<Box>(path2);
-
-
-
     }
 
     public void moveToBoxOutsideSenderPath(Agent agent, Agent sender) {

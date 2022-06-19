@@ -1,7 +1,6 @@
 package com.tia.messages;
 
 import com.tia.enums.Content;
-import com.tia.enums.Status;
 import com.tia.enums.Type;
 import com.tia.models.Agent;
 
@@ -10,7 +9,6 @@ public class Mail {
     private Agent receiver;
     private Type type;
     private Content content;
-    private Status status;
     private int priority;
 
     public Mail(Agent sender, Agent receiver, Type type, Content content) {
@@ -21,12 +19,10 @@ public class Mail {
         this.priority = sender.getValue().getCode();
     }
 
+    // Getters & Setters
+
     public Agent getSender() {
         return sender;
-    }
-
-    public Agent getReceiver() {
-        return receiver;
     }
 
     public Type getType() {

@@ -9,10 +9,7 @@ import com.tia.models.Grid;
 public class NaiveStrategy implements Strategy {
 
     /**
-     * While Agent is not arrived.
-     * Go to NORTH, SOUTH, EAST or WEST Box in board.
-     * Check if Agent can move to Box (inside board's bounds).
-     * and destination Box is empty (no other Agent).
+     * Agent basic movement (NORTH, SOUTH, EAST, WEST).
      *
      * @param agent     Agent
      * @param direction Direction
@@ -62,6 +59,32 @@ public class NaiveStrategy implements Strategy {
         }
     }
 
+    /**
+     * Apply strategy: go to the right column first then go to the right row.
+     *
+     * @param agent
+     */
+    @Override
+    public void solve(Agent agent) {
+        int currentCol = agent.getCurrent().getY();
+        int currentRow = agent.getCurrent().getX();
+        int destinationCol = agent.getDestination().getY();
+        int destinationRow = agent.getDestination().getX();
+
+        if (currentRow == destinationRow) {
+            if (currentCol > destinationCol) {
+                move(agent, Direction.WEST);
+            } else if (currentCol < destinationCol) {
+                move(agent, Direction.EAST);
+            }
+
+        } else if (currentRow > destinationRow) {
+            move(agent, Direction.NORTH);
+        } else if (currentRow < destinationRow) {
+            move(agent, Direction.SOUTH);
+        }
+    }
+
     private boolean canMove(Agent agent, Direction direction) {
         Box current = agent.getCurrent();
         Grid grid = Game.getGrid();
@@ -83,34 +106,5 @@ public class NaiveStrategy implements Strategy {
         }
 
         return value;
-    }
-
-    /**
-     * Go to the right column first
-     * then go to the right row
-     *
-     * @param agent
-     */
-    @Override
-    public void solve(Agent agent) {
-        System.out.println("NaiveStrategy solving...");
-
-        int currentCol = agent.getCurrent().getY();
-        int currentRow = agent.getCurrent().getX();
-        int destinationCol = agent.getDestination().getY();
-        int destinationRow = agent.getDestination().getX();
-
-        if (currentRow == destinationRow) {
-            if (currentCol > destinationCol) {
-                move(agent, Direction.WEST);
-            } else if (currentCol < destinationCol) {
-                move(agent, Direction.EAST);
-            }
-
-        } else if (currentRow > destinationRow) {
-            move(agent, Direction.NORTH);
-        } else if (currentRow < destinationRow) {
-            move(agent, Direction.SOUTH);
-        }
     }
 }

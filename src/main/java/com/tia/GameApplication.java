@@ -10,15 +10,17 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
-import static com.tia.Constants.*;
+import static com.tia.Constants.HEIGHT_SCENE;
+import static com.tia.Constants.WIDTH_SCENE;
 
 public class GameApplication extends Application {
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
-
         FXMLLoader fxmlLoader = new FXMLLoader(GameApplication.class.getResource("game-view.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root, WIDTH_SCENE, HEIGHT_SCENE);
@@ -37,9 +39,5 @@ public class GameApplication extends Application {
                 System.exit(0);
             }
         });
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

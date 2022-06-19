@@ -10,7 +10,6 @@ public enum Letter {
     S(18, "S"), T(19, "T"), U(20, "U"),
     V(21, "V"), W(22, "W"), X(23, "X");
 
-
     private int code;
     private String text;
 
@@ -19,6 +18,10 @@ public enum Letter {
         this.text = text;
     }
 
+    /**
+     * @param code
+     * @return a letter
+     */
     public static Letter getLetterByCode(int code) {
         for (Letter symbol : Letter.values()) {
             if (symbol.code == code) {

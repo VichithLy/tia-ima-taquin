@@ -14,7 +14,7 @@ public final class Game {
     private static Context context;
 
     /**
-     * Constructor of Game
+     * Initialize the game with all params.
      *
      * @param gridSize
      * @param agentsCount
@@ -32,7 +32,7 @@ public final class Game {
     // Methods
 
     /**
-     * Initialize grid with agents
+     * Initialize the grid with agents.
      *
      * @param grid
      * @param agentsCount
@@ -65,53 +65,53 @@ public final class Game {
             agents.add(agent);
         }
 
-//        testAgents();
+//        testCases();
     }
 
-    public static void testAgents() {
+    public static void testCases() {
         // CASE 1
-        /*addAgent(0,0,0, 0, 2);
-        addAgent(1,0,1, 0, 1);
-        addAgent(2,1,0, 1, 0);*/
+        addAgent(0, 0, 0, 0, 2);
+        addAgent(1, 0, 1, 0, 1);
+        addAgent(2, 1, 0, 1, 0);
 
         // CASE 2
-        /*addAgent(0,0,4, 0, 2);
-        addAgent(1,0,3, 0, 3);
-        addAgent(2,1,4, 1, 4);*/
+//        addAgent(0,0,4, 0, 2);
+//        addAgent(1,0,3, 0, 3);
+//        addAgent(2,1,4, 1, 4);
 
         // CASE 3
-        /*addAgent(0,4,0, 0, 2);
-        addAgent(1,3,0, 3, 0);
-        addAgent(2,4,1, 4, 1);*/
+//        addAgent(0,4,0, 0, 2);
+//        addAgent(1,3,0, 3, 0);
+//        addAgent(2,4,1, 4, 1);
 
         // CASE 4
-        /*addAgent(0,4,4, 0, 2);
-        addAgent(1,4,3, 4, 3);
-        addAgent(2,3,4, 3, 4);*/
+//        addAgent(0,4,4, 0, 2);
+//        addAgent(1,4,3, 4, 3);
+//        addAgent(2,3,4, 3, 4);
 
         // CASE 5
-        /*addAgent(0,2,0, 0, 0);
-        addAgent(1,1,0, 1, 0);
-        addAgent(2,2,1, 2, 1);
-        addAgent(3,3,0, 3, 0);*/
+//        addAgent(0,2,0, 0, 0);
+//        addAgent(1,1,0, 1, 0);
+//        addAgent(2,2,1, 2, 1);
+//        addAgent(3,3,0, 3, 0);
 
         // CASE 6
-        /*addAgent(0,2,4, 0, 0);
-        addAgent(1,2,3, 2, 3);
-        addAgent(2,1,4, 1, 4);
-        addAgent(3,3,4, 3, 4);*/
+//        addAgent(0,2,4, 0, 0);
+//        addAgent(1,2,3, 2, 3);
+//        addAgent(2,1,4, 1, 4);
+//        addAgent(3,3,4, 3, 4);
 
         // CASE 7
-        /*addAgent(0,0,2, 0, 0);
-        addAgent(1,0,1, 0, 1);
-        addAgent(2,0,3, 0, 3);
-        addAgent(3,1,2, 1, 2);*/
+//        addAgent(0,0,2, 0, 0);
+//        addAgent(1,0,1, 0, 1);
+//        addAgent(2,0,3, 0, 3);
+//        addAgent(3,1,2, 1, 2);
 
         // CASE 8
-        /*addAgent(0,4,2, 4, 0);
-        addAgent(1,4,1, 4, 1);
-        addAgent(2,4,3, 4, 3);
-        addAgent(3,3,2, 3, 2);*/
+//        addAgent(0,4,2, 4, 0);
+//        addAgent(1,4,1, 4, 1);
+//        addAgent(2,4,3, 4, 3);
+//        addAgent(3,3,2, 3, 2);
 
         // CASE 9
 //        addAgent(0,2,2, 3, 4);
@@ -140,9 +140,16 @@ public final class Game {
 //        addAgent(2,4,3, 4, 4);
 //        addAgent(3,2,4, 2, 4);
 
-        addAgent(0, 0, 0, 0, 4);
+//        addAgent(0, 0, 0, 0, 4);
     }
 
+    /**
+     * @param index
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     */
     public static void addAgent(int index, int x1, int y1, int x2, int y2) {
         Box current = grid.getBox(x1, y1); // TO CHANGE
         Box destination = grid.getBox(x2, y2);
@@ -150,14 +157,6 @@ public final class Game {
 
         current.setAgent(agent);
         agents.add(agent);
-    }
-
-    /**
-     * @param index
-     * @return
-     */
-    public static Agent getAgent(int index) {
-        return getAgents().get(index);
     }
 
     public static boolean isSolved() {
@@ -174,7 +173,7 @@ public final class Game {
     // Print
 
     /**
-     * Print agents objets in current game
+     * Print agents.
      */
     public static void printAgents() {
         for (Agent agent : agents) {
@@ -183,20 +182,16 @@ public final class Game {
     }
 
     /**
-     * Print grid's status
+     * Print grid's status.
      */
     public static void printGrid() {
         System.out.println("\n==========\n");
         for (Box[] boxes : grid.getBoxes()) {
             for (Box box : boxes) {
-                // System.out.print(box + " ");
-
                 if (box.getAgent() == null) {
-                    // System.out.print("0 ");
                     System.out.print(box + " ");
                 } else {
                     System.out.print("  " + box.getAgent().getValue() + "   ");
-                    // System.out.print(y.getAgent().toString() + " ");
                 }
             }
             System.out.println();
@@ -228,10 +223,6 @@ public final class Game {
 
     public static void setAgents(List<Agent> agents) {
         Game.agents = agents;
-    }
-
-    public static Context getContext() {
-        return context;
     }
 
     public static void setContext(Context context) {

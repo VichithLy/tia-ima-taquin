@@ -1,10 +1,7 @@
 package com.tia;
 
-import com.tia.algorithms.BFS;
-import com.tia.enums.Direction;
 import com.tia.messages.MailBox;
 import com.tia.models.Agent;
-import com.tia.models.Box;
 import com.tia.models.Game;
 import com.tia.strategies.CognitiveStrategy;
 import com.tia.strategies.Context;
@@ -19,11 +16,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +28,8 @@ import static com.tia.Constants.SIZE_BOARD;
 public class GameController {
     static Boolean gameIsInit = false;
     static Boolean gameIsRunning = false;
-    static Boolean exitGame; // https://www.geeksforgeeks.org/killing-threads-in-java/
+    // Ressource: https://www.geeksforgeeks.org/killing-threads-in-java/
+    static Boolean exitGame;
 
     @FXML
     GridPane board;
@@ -58,12 +54,14 @@ public class GameController {
         GridView.drawBoards(board, solvedBoard);
     }
 
+    /**
+     * Initialize the game with agents.
+     */
     @FXML
     public void init() {
         exitGame = true;
         gameIsInit = true;
         gameIsRunning = false;
-
         stepsCountLabel.textProperty().bind(Bindings.convert(stepsCount));
         runSetStepsCountLabelThread(0);
 
@@ -71,51 +69,11 @@ public class GameController {
         MailBox.init(Game.getAgents());
 
         GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
-
-        // printStatus();
     }
 
-    @FXML
-    public void up() {
-        Agent agent = Game.getAgents().get(0);
-        List<Box> path = BFS.findPath(agent, false);
-
-//        List<Box> obstaclesToAvoid = new ArrayList<>();
-//        obstaclesToAvoid.add(new Box(0, 1));
-//
-//        List<Box> path = BFS.findPath(agent, obstaclesToAvoid);
-//        System.out.println("path=" + path);
-//        System.out.println("directions=" + BFS.convertPathToDirections(path));
-
-        for (Box box : path) {
-            int x = box.getX();
-            int y = box.getY();
-
-            GridView.colorTile(board, x, y, Color.AQUAMARINE);
-        }
-        // Game.printGrid();
-    }
-
-    @FXML
-    public void down() {
-        exitGame = true;
-    }
-
-    @FXML
-    public void left() {
-    }
-
-    @FXML
-    public void right() {
-        Agent agent = Game.getAgents().get(0);
-        NaiveStrategy strategy = new NaiveStrategy();
-        strategy.move(agent, Direction.EAST);
-
-        GridView.createOrUpdateBoardsAndAgents(board, solvedBoard);
-
-        // printStatus();
-    }
-
+    /**
+     * Run the game.
+     */
     @FXML
     public void run() {
         if (gameIsInit && !gameIsRunning) {
@@ -125,6 +83,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Stop the game.
+     */
     @FXML
     public void stop() {
         if (gameIsInit && gameIsRunning) {
@@ -146,23 +107,21 @@ public class GameController {
 
     // Threads
 
+    /**
+     * Execute a threads pool of agents while the game is not finished.
+     */
     public void solveGame() {
         Runnable runnable = () -> {
-            // TO_UNCOMMENT
             while (!Game.isSolved() && exitGame == false) {
-//            for (int i = 0; i < 1; i++) {
                 runSetStepsCountLabelThread(stepsCount.getValue() + 1);
                 executeAgentsThreadPool();
                 runCreateOrUpdateBoardsAndAgentsThread();
                 sleepMillis(GameUtils.convertToLong(stepDurationBox.getValue()));
-                // printStatus();
-//                Game.printGrid();
             }
 
-            // TO_UNCOMMENT
-//            if (exitGame == false) {
-//                runShowAlertThread("Board solved successfully!");
-//            }
+            if (exitGame == false) {
+                runShowAlertThread("Board solved successfully!");
+            }
         };
         Thread thread = new Thread(runnable);
         thread.start();
@@ -195,11 +154,9 @@ public class GameController {
     }
 
     /**
-     * https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
+     * Ressource: https://ducmanhphan.github.io/2020-03-20-Waiting-threads-to-finish-completely-in-Java/
      */
     public synchronized void executeAgentsThreadPool() {
-        // TO_UNCOMMENT
-
         CountDownLatch latch = new CountDownLatch(Game.getAgents().size());
         ExecutorService executor = Executors.newFixedThreadPool(Game.getAgents().size());
 
@@ -208,16 +165,6 @@ public class GameController {
             executor.execute(agent);
         }
 
-        // Test with one Agent
-//        CountDownLatch latch = new CountDownLatch(1);
-//        ExecutorService executor = Executors.newFixedThreadPool(1);
-//
-//        Agent agent = Game.getAgent(0);
-//        agent.setLatch(latch);
-//        executor.execute(agent);
-//
-//        executor.shutdown();
-
         try {
             latch.await();
         } catch (InterruptedException ex) {
@@ -225,7 +172,7 @@ public class GameController {
         }
     }
 
-    // Utils
+    // Utils initialization
 
     public void initStrategiesAndSetDefault() {
         strategyBox.setItems(FXCollections.observableList(Arrays.asList("Naive", "Simple", "Cognitive")));
@@ -243,7 +190,7 @@ public class GameController {
 
     public void initStepDurationAndSetDefault() {
         stepDurationBox.setItems(FXCollections.observableList(Arrays.asList("10", "50", "250", "500", "1000", "2000")));
-        stepDurationBox.getSelectionModel().select(0);
+        stepDurationBox.getSelectionModel().select(3);
     }
 
     public Context returnSelectedStrategyContext() {
@@ -257,6 +204,8 @@ public class GameController {
 
         return context;
     }
+
+    // Print
 
     public void printParams() {
         System.out.println("Strategy=" + strategyBox.getValue().toString());

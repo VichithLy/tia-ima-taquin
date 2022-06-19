@@ -9,14 +9,16 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 /**
- * PriorityQueue: https://www.geeksforgeeks.org/priority-queue-class-in-java/
- * Comparator: https://www.geeksforgeeks.org/implement-priorityqueue-comparator-java/
+ * Resources:
+ * - PriorityQueue: https://www.geeksforgeeks.org/priority-queue-class-in-java/
+ * - Comparator: https://www.geeksforgeeks.org/implement-priorityqueue-comparator-java/
  */
 public final class MailBox {
     public static Map<Agent, Map<Type, PriorityQueue<Mail>>> mails = new HashMap<>();
     public static Map<Agent, PriorityQueue<Mail>> sent = new HashMap<>();
 
     /**
+     * Initialize the mailbox of each agent.
      * @param agents
      */
     public static void init(List<Agent> agents) {
@@ -32,8 +34,9 @@ public final class MailBox {
     }
 
     /**
+     * Get mails of an agent, by type.
      * @param agent
-     * @return
+     * @return a priority queue of mails
      */
     public static PriorityQueue<Mail> getMails(Agent agent, Type type) {
         if (type.equals(Type.SENT)) return sent.get(agent);
@@ -41,8 +44,9 @@ public final class MailBox {
     }
 
     /**
+     * Get a mail by agent and type.
      * @param agent
-     * @return
+     * @return a mail
      */
     public static Mail getAndDeletePriorityMail(Agent agent, Type type) {
         if (type.equals(Type.SENT)) return sent.get(agent).poll();
@@ -50,19 +54,26 @@ public final class MailBox {
     }
 
     /**
+     * Get the priority mail by agent and type.
      * @param agent
-     * @return
+     * @return a mail
      */
     public static Mail getPriorityMail(Agent agent, Type type) {
         if (type.equals(Type.SENT)) return sent.get(agent).peek();
         return mails.get(agent).get(type).peek();
     }
 
+    /**
+     * Add a mail of an agent to sent mailbox.
+     * @param agent
+     * @param mail
+     */
     public static void addSent(Agent agent, Mail mail) {
         sent.get(agent).add(mail);
     }
 
     /**
+     * Delete a request, response or sent mail of an agent.
      * @param mail
      * @param agent
      */
@@ -78,6 +89,7 @@ public final class MailBox {
     }
 
     /**
+     * Delete the request, response or sent priority mail of an agent.
      * @param agent
      * @param type
      */
@@ -92,6 +104,7 @@ public final class MailBox {
     }
 
     /**
+     * Send mail from agent to another agent.
      * @param mail
      * @param agent
      */
@@ -106,8 +119,9 @@ public final class MailBox {
     }
 
     /**
+     * Check if requests or responses or sent mailbox is empty.
      * @param agent
-     * @return
+     * @return true if mailbox is empty, else false
      */
     public static boolean isEmpty(Agent agent, Type type) {
         if (type.equals(Type.SENT)) return sent.get(agent).isEmpty();

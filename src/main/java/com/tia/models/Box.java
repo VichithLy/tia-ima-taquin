@@ -19,7 +19,7 @@ public class Box {
         return agent;
     }
 
-    public synchronized void  setAgent(Agent agent) {
+    public synchronized void setAgent(Agent agent) {
         this.agent = agent;
     }
 
@@ -31,11 +31,12 @@ public class Box {
         return y;
     }
 
-    // Functions
+    // Methods
 
     /**
      * Check if the param Object is a Box
      * and has the same x and y as this Box.
+     *
      * @param o
      * @return true or false
      */

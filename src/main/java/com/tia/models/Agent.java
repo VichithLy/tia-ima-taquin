@@ -1,11 +1,14 @@
 package com.tia.models;
 
-import com.tia.algorithms.BFS;
+import com.tia.algorithms.Path;
 import com.tia.enums.Direction;
 import com.tia.enums.Letter;
 import com.tia.strategies.Context;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class Agent implements Runnable {
@@ -16,7 +19,6 @@ public class Agent implements Runnable {
     private List<Direction> pathDirections;
     private int priority;
     private Context context;
-
     private CountDownLatch latch;
 
     public Agent(Letter value, Box current, Box destination, Context context) {
@@ -35,24 +37,8 @@ public class Agent implements Runnable {
         return value;
     }
 
-    public void setValue(Letter value) {
-        this.value = value;
-    }
-
-    public Box getSource() {
-        return source;
-    }
-
-    public void setSource(Box source) {
-        this.source = source;
-    }
-
     public Box getDestination() {
         return destination;
-    }
-
-    public void setDestination(Box destination) {
-        this.destination = destination;
     }
 
     public Box getCurrent() {
@@ -63,20 +49,12 @@ public class Agent implements Runnable {
         this.current = current;
     }
 
-    public List<Direction> getPathDirections() {
-        return pathDirections;
-    }
-
     public void setPathDirections(List<Direction> pathDirections) {
         this.pathDirections = pathDirections;
     }
 
     public int getPriority() {
         return priority;
-    }
-
-    public CountDownLatch getLatch() {
-        return latch;
     }
 
     public void setLatch(CountDownLatch latch) {
@@ -89,6 +67,9 @@ public class Agent implements Runnable {
         return (current.equals(destination));
     }
 
+    /**
+     * @return a list of agents or null if no agents around
+     */
     public List<Agent> getNeighbours() {
         Grid grid = Game.getGrid();
         List<Agent> neighbours = new ArrayList<>();
@@ -110,6 +91,9 @@ public class Agent implements Runnable {
         return neighbours;
     }
 
+    /**
+     * @return an agent
+     */
     public Agent getRandomNeighbour() {
         List<Agent> neighbours = getNeighbours();
         if (!neighbours.isEmpty()) {
@@ -121,9 +105,8 @@ public class Agent implements Runnable {
     }
 
     /**
-     *
      * @param agent
-     * @return
+     * @return an agent, or null if no agents around
      */
     public Agent getRandomNeighbourExceptOne(Agent agent) {
         List<Agent> neighbours = getNeighbours();
@@ -137,8 +120,10 @@ public class Agent implements Runnable {
     }
 
     /**
+     * Get the neighbor in the box the agent wants to go.
+     *
      * @param direction
-     * @return Neighbour in the box the agent wants to go
+     * @return an agent, or null if no neighbours
      */
     public Agent getNeighbour(Direction direction) {
         Grid grid = Game.getGrid();
@@ -160,6 +145,12 @@ public class Agent implements Runnable {
         return neighbour;
     }
 
+    /**
+     * Get an agent of minimum priority around.
+     *
+     * @param one
+     * @return an agent, or null if no neighbour
+     */
     public Agent getMinPriorityNeighbourAgentExceptOne(Agent one) {
         List<Agent> neighbours = getNeighbours();
 
@@ -177,6 +168,9 @@ public class Agent implements Runnable {
         }
     }
 
+    /**
+     * @return a list of boxes
+     */
     public List<Box> getBoxNeighbours() {
         Grid grid = Game.getGrid();
         List<Box> neighbours = new ArrayList<>();
@@ -197,7 +191,7 @@ public class Agent implements Runnable {
     }
 
     /**
-     * @return
+     * @return a list of free boxes (with no agent in it)
      */
     public List<Box> getFreeBoxNeighbours() {
         Grid grid = Game.getGrid();
@@ -221,7 +215,10 @@ public class Agent implements Runnable {
         return neighbours;
     }
 
-    public Direction getRandomDirection() {
+    /**
+     * @return a random free direction (with no agent)
+     */
+    public Direction getRandomFreeDirection() {
         List<Box> boxes = getFreeBoxNeighbours();
 
         if (!boxes.isEmpty()) {
@@ -232,12 +229,15 @@ public class Agent implements Runnable {
             boxesToDirection.add(current);
             boxesToDirection.add(randBox);
 
-            return BFS.convertPathToDirections(boxesToDirection).get(0);
+            return Path.convertToDirections(boxesToDirection).get(0);
         }
 
         return null;
     }
 
+    /**
+     * @return true if agent is stuck (it cannot move because there are agents around), else false
+     */
     public boolean isStuck() {
         Grid grid = Game.getGrid();
         int gridMaxIndex = grid.getSize() - 1;
@@ -268,8 +268,17 @@ public class Agent implements Runnable {
         return result;
     }
 
+    /**
+     * Solving strategy
+     */
     public synchronized void solve() {
         context.executeStrategy(this);
+    }
+
+    @Override
+    public void run() {
+        solve();
+        this.latch.countDown();
     }
 
     @Override
@@ -279,11 +288,5 @@ public class Agent implements Runnable {
                 ", current=" + current.toString() +
                 ", destination=" + destination.toString() +
                 '}';
-    }
-
-    @Override
-    public void run() {
-        solve();
-        this.latch.countDown();
     }
 }

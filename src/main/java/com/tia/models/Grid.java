@@ -2,13 +2,12 @@ package com.tia.models;
 
 public class Grid {
     private int size;
-
     private Box[][] boxes;
 
     public Grid(int size) {
         this.size = size;
 
-        // IMPORTANT: in 2D arrays, rows come first (y,x)
+        // WARNING: in 2D arrays, rows come first (y,x)
         boxes = new Box[size][size];
         for (int column = 0; column < boxes.length; column++) {
             for (int row = 0; row < boxes[column].length; row++) {
@@ -19,7 +18,7 @@ public class Grid {
 
     // Getters & Setters
 
-    public synchronized Box getBox(int x, int y)  {
+    public synchronized Box getBox(int x, int y) {
         return boxes[x][y];
     }
 

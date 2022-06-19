@@ -7,9 +7,11 @@ import java.util.Random;
 public class GameUtils {
 
     /**
-     * https://www.geeksforgeeks.org/find-all-pairs-possible-from-the-given-array/
+     * Get all possible pairs of items in array.
+     * Resources: https://www.geeksforgeeks.org/find-all-pairs-possible-from-the-given-array/
+     *
      * @param arr
-     * @return all possible pairs of items in array
+     * @return list of int pairs
      */
     public static List<int[]> getAllPossiblePairs(int arr[]) {
         List<int[]> pairs = new ArrayList<>();
@@ -25,9 +27,10 @@ public class GameUtils {
     }
 
     /**
-     * https://www.baeldung.com/java-random-list-element
+     * Resources: https://www.baeldung.com/java-random-list-element
+     *
      * @param list
-     * @return
+     * @return a pair of int.
      */
     public static int[] getRandomItemFromList(List<int[]> list) {
         Random rand = new Random();
@@ -35,15 +38,11 @@ public class GameUtils {
         return randomElement;
     }
 
-    /**
-     * @param name
-     * @param obj
-     */
     public static void print(Object name, Object obj) {
         System.out.println(name + ": " + obj);
     }
 
-    public static Long convertToLong(Object o){
+    public static Long convertToLong(Object o) {
         String stringToConvert = String.valueOf(o);
         Long convertedLong = Long.parseLong(stringToConvert);
         return convertedLong;

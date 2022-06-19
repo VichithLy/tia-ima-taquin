@@ -23,7 +23,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button mnemonicParsing="false" onAction="#init" prefWidth="120.0" text="Init" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                <Button mnemonicParsing="false" onAction="#init" prefWidth="120.0" text="Init" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
@@ -58,10 +58,6 @@
                <GridPane.margin>
                   <Insets bottom="10.0" />
                </GridPane.margin></ComboBox>
-            <Button mnemonicParsing="false" onAction="#left" text="LEFT" GridPane.rowIndex="3" />
-            <Button mnemonicParsing="false" onAction="#right" text="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-            <Button mnemonicParsing="false" onAction="#down" text="DOWN" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
-            <Button mnemonicParsing="false" onAction="#up" text="UP" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
             <ComboBox fx:id="agentsNumberBox" layoutX="25.0" layoutY="69.0" prefWidth="120.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="10.0" />
